@@ -1,0 +1,11 @@
+trainer: hello
+output_dir: $SCRATCH/deep-protmd/hello
+
+data_config:
+    name: dummy
+    n_train: 1024
+    n_valid: 1024
+    batch_size: 128
+
+train_config:
+    n_epochs: 1
