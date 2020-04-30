@@ -1,5 +1,5 @@
 trainer: hello
-output_dir: $SCRATCH/deep-protmd/hello
+output_dir: results/hello
 
 data_config:
     name: dummy
