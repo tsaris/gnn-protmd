@@ -1,2 +1,3 @@
-# deep-protmd
-Deep learning for proteins and molecular dynamics simulations
+# gnn-protmd
+Deep learning and Graph Neural Networks for proteins and
+molecular dynamics simulations
