@@ -1,0 +1,25 @@
+trainer: gnn
+output_dir: results/mpnn_bzrmd
+
+data:
+    name: tud
+    tud_name: BZR_MD
+    n_train: 256
+    n_valid: 128
+    batch_size: 8
+    download_path: '$SCRATCH/gnn-protmd/datasets'
+
+model:
+    name: mpnn
+    n_node_features: 8
+    n_edge_features: 6
+    hidden_size: 16
+    n_outputs: 1
+    loss_function: binary_cross_entropy_with_logits
+
+optimizer:
+    name: Adam
+    lr: 0.001
+
+training:
+    n_epochs: 128
