@@ -45,9 +45,9 @@ def main():
 
     # Load configuration
     config = load_config(args.config)
-    data_config = config['data_config']
-    model_config = config.get('model_config', {})
-    train_config = config['train_config']
+    data_config = config['data']
+    model_config = config.get('model', {})
+    train_config = config['training']
 
     # Prepare output directory
     output_dir = config.get('output_dir', None)
