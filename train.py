@@ -45,9 +45,6 @@ def main():
 
     # Load configuration
     config = load_config(args.config)
-    data_config = config['data']
-    model_config = config.get('model', {})
-    train_config = config['training']
 
     # Prepare output directory
     output_dir = config.get('output_dir', None)
@@ -65,6 +62,7 @@ def main():
 
     # Load the datasets
     is_distributed = args.distributed_backend is not None
+    data_config = config['data']
     train_data_loader, valid_data_loader = get_data_loaders(
         distributed=is_distributed, **data_config)
 
@@ -75,11 +73,14 @@ def main():
     trainer = get_trainer(name=config['trainer'], distributed=is_distributed,
                           rank=rank, output_dir=output_dir, gpu=gpu)
     # Build the model
-    trainer.build_model(**model_config)
+    model_config = config.get('model', {})
+    optimizer_config = config.get('optimizer', {})
+    trainer.build_model(optimizer=optimizer_config, **model_config)
     if rank == 0:
         trainer.print_model_summary()
 
     # Run the training
+    train_config = config['training']
     summary = trainer.train(train_data_loader=train_data_loader,
                             valid_data_loader=valid_data_loader,
                             **train_config)

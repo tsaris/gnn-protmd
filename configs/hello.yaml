@@ -7,5 +7,5 @@ data:
     n_valid: 1024
     batch_size: 128
 
-train:
+training:
     n_epochs: 1
