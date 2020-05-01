@@ -11,11 +11,15 @@ import logging
 import numpy as np
 import torch
 
+# Locals
+from models import get_model
+
 class BaseTrainer(object):
-    """
-    Base class for PyTorch trainers.
-    This implements the common training logic,
-    logging of summaries, and checkpoints.
+    """Base class for PyTorch trainers.
+
+    This implements the common training logic, logging of summaries, and
+    checkpoints. For this repository, it assumes the common single-model
+    use-case. More complicated use cases (e.g. GANs) would require adjustment.
     """
 
     def __init__(self, output_dir=None, gpu=None,
@@ -32,6 +36,27 @@ class BaseTrainer(object):
         self.distributed = distributed
         self.rank = rank
         self.summaries = {}
+
+    def _build_optimizer(self, model, name, **kwargs):
+        OptimizerType = getattr(torch.optim, name)
+        return OptimizerType(model.parameters(), **kwargs)
+
+    def build_model(self, loss_function, optimizer, **model_args):
+        """Instantiate our model"""
+
+        # Construct the model
+        self.model = get_model(**model_args).to(self.device)
+
+        # Distributed data parallelism
+        if self.distributed:
+            device_ids = [self.gpu] if self.gpu is not None else None
+            self.model = DistributedDataParallel(self.model, device_ids=device_ids)
+
+        # Construct the optimizer
+        self.optimizer = self._build_optimizer(self.model, **optimizer)
+
+        # Construct the loss function
+        self.loss_func = getattr(torch.nn.functional, loss_function)
 
     def print_model_summary(self):
         """Override as needed"""
@@ -56,16 +81,13 @@ class BaseTrainer(object):
 
     def write_checkpoint(self, checkpoint_id):
         """Write a checkpoint for the model"""
+        # TODO: needs update
         assert self.output_dir is not None
         checkpoint_dir = os.path.join(self.output_dir, 'checkpoints')
         checkpoint_file = 'model_checkpoint_%03i.pth.tar' % checkpoint_id
         os.makedirs(checkpoint_dir, exist_ok=True)
         torch.save(dict(model=self.model.state_dict()),
                    os.path.join(checkpoint_dir, checkpoint_file))
-
-    def build_model(self):
-        """Virtual method to construct the model"""
-        raise NotImplementedError
 
     def train_epoch(self, data_loader):
         """Virtual method to train a model"""
