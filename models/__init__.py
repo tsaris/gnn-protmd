@@ -13,7 +13,7 @@ def get_model(name, **model_args):
     # First look in our local modules using importlib
     try:
         module = importlib.import_module('.' + name, 'models')
-        return module.get_model(**model_args)
+        return module.build_model(**model_args)
 
     # If the import fails, try getting it from torchvision
     except ImportError:
