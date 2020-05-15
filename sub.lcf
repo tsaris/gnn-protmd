@@ -1,0 +1,17 @@
+#!/bin/bash
+# Begin LSF directives
+#BSUB -P stf011
+#BSUB -J gnn
+#BSUB -o logs/gnn.o%J
+#BSUB -W 1:00
+#BSUB -nnodes 1
+#BSUB -alloc_flags "nvme smt4"
+#BSUB -N
+# End LSF directives and begin shell commands
+
+nnodes=$(cat ${LSB_DJOB_HOSTFILE} | sort | uniq | grep -v login | grep -v batch | wc -l)
+
+export PATH=/gpfs/alpine/proj-shared/stf011/atsaris/summit_envs/ibm_clone_torchgeo_env/conda_env/bin/:$PATH 
+export LD_LIBRARY_PATH=/gpfs/alpine/proj-shared/stf011/atsaris/summit_envs/ibm_clone_torchgeo_env/conda_env/bin/:$LD_LIBRARY_PATH
+
+jsrun -n${nnodes} -a1 -c20 -r1 python data_proc.py configs/mpnn_md_summit.yaml
