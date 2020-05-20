@@ -23,9 +23,6 @@ def get_datasets(n_train, n_valid, tud_name, download_path='datasets'):
         name=tud_name, root=download_path,
         use_node_attr=True, use_edge_attr=True)
 
-    for i in dataset:
-        print(i)
-
     # Split into training and validation
     train_dataset, valid_dataset, _ = torch.utils.data.random_split(
         dataset, [n_train, n_valid, len(dataset)-n_train-n_valid])
