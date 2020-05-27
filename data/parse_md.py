@@ -8,6 +8,7 @@ See:
 
 import os
 import numpy as np
+import random
 
 from  scipy.spatial.distance import euclidean, cosine
 from scipy.stats import percentileofscore as perc
@@ -18,6 +19,8 @@ import torch_geometric
 from torch_geometric.datasets import TUDataset
 from torch.utils.data import Dataset, random_split
 from torch_geometric.data import Data
+
+import tensorflow as tf
 
 def load_graph(filename):
 
@@ -49,7 +52,8 @@ def load_graph(filename):
     edge_index = torch.tensor(edge_np, dtype=torch.long)
     edge_attr = torch.tensor(dist3, dtype=torch.float)
     # Make the node tensor
-    x = torch.tensor(protein[:,2:3], dtype=torch.float)
+    nd_labels = tf.keras.utils.to_categorical(protein[:,0], num_classes=23)
+    x = torch.tensor(nd_labels, dtype=torch.float)
     
     # Make the labels
     if (filename.endswith('off_a.txt')): y = torch.tensor([0], dtype=torch.int)
@@ -64,7 +68,10 @@ class MDGraphDataset(Dataset):
         input_dir = os.path.expandvars(input_dir)
         filenames = sorted([os.path.join(input_dir, f) for f in os.listdir(input_dir)
                             if f.endswith('.txt')])
+        random.shuffle(filenames)
+        random.shuffle(filenames)
         self.filenames = filenames if n_samples is None else filenames[:n_samples]
+
 
     def __getitem__(self, index):
         return load_graph(self.filenames[index])
