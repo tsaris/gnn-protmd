@@ -14,6 +14,8 @@ from  scipy.spatial.distance import euclidean, cosine
 from scipy.stats import percentileofscore as perc
 from scipy.spatial.distance import pdist
 
+from itertools import combinations
+
 import torch
 import torch_geometric
 from torch_geometric.datasets import TUDataset
@@ -27,24 +29,20 @@ def load_graph(filename):
     protein = np.loadtxt(filename)
     
     # Make all the combinations
-    mesh = np.array(np.meshgrid(np.arange(protein.shape[0]), np.arange(protein.shape[0])))
-    edge_np = mesh.T.reshape(-1, 2)
-
-    # Remove the self-edge (find an optimized way of this)
-    list_ = []
-    for i in range(0, len(edge_np)):
-        if (edge_np[i][0]==edge_np[i][1]): list_.append(i)
-    edge_np = np.delete(edge_np, list_, axis=0)
+    edge_np = combinations(np.arange(protein.shape[0]), 2)
+    edge_np = np.array(list(edge_np))
+    edge_np_f = np.flip(edge_np)
+    edge_np = np.concatenate((edge_np, edge_np_f[::-1]), axis=0)
 
     # Edge features
     dist = np.array(pdist(protein[:,-3:].astype('float')))
-    dist2 = np.concatenate((dist, dist))
+    dist2 = np.concatenate((dist, dist), axis=0)
     dist3 = dist2.reshape(dist2.shape[0], 1)
 
     # Remove the edges and edge features with distance > 10 A (find an optimized way of this)
     list_ = []
     for i in range(0, len(dist3)):
-        if (dist3[i]>10): list_.append(i)
+        if (dist3[i]>6): list_.append(i)
     edge_np = np.delete(edge_np, list_, axis=0)
     dist3 = np.delete(dist3, list_, axis=0)
 

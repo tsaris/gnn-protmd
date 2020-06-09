@@ -5,8 +5,8 @@ data:
     name: parse_md
     n_train: 300
     n_valid: 200
-    input_dir: '/gpfs/alpine/world-shared/stf011/atsaris/datagnn/datagnn_ras_2020/graph'
-    batch_size: 32
+    input_dir: '/gpfs/alpine/world-shared/stf011/atsaris/datagnn/datagnn_ras_2020/graph_test'
+    batch_size: 1
 
 model:
     name: mpnn
@@ -21,4 +21,4 @@ optimizer:
     lr: 0.001
 
 training:
-    n_epochs: 2 #128
+    n_epochs: 10

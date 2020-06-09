@@ -28,11 +28,15 @@ class BaseTrainer(object):
         self.output_dir = (os.path.expandvars(output_dir)
                            if output_dir is not None else None)
         self.gpu = gpu
+        
         if gpu is not None:
+            print("Using GPU")
             self.device = torch.device('cuda', gpu)
             torch.cuda.set_device(gpu)
         else:
+            print("Using CPU")
             self.device = torch.device('cpu')
+
         self.distributed = distributed
         self.rank = rank
         self.summaries = {}
