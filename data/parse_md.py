@@ -49,8 +49,11 @@ def load_graph(filename):
     # Make the edge tensor
     edge_index = torch.tensor(edge_np, dtype=torch.long)
     edge_attr = torch.tensor(dist3, dtype=torch.float)
-    # Make the node tensor
+    # Make the node type
     nd_labels = tf.keras.utils.to_categorical(protein[:,0], num_classes=23)
+    # Add node feature of relative position
+    nd_labels = np.hstack((nd_labels, protein[:,[1]]))
+    # Make the node tensor
     x = torch.tensor(nd_labels, dtype=torch.float)
     
     # Make the labels
