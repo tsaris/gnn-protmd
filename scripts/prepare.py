@@ -77,11 +77,14 @@ def parse_pdb(path, chain='A', all_chains=False, first=False):
     return protein_add_feature
 
 
-protein_all_ON = parse_pdb("/gpfs/alpine/world-shared/stf011/atsaris/datagnn/datagnn_ras_2020/pdb/small_on.pdb")
-protein_all_OFF = parse_pdb("/gpfs/alpine/world-shared/stf011/atsaris/datagnn/datagnn_ras_2020/pdb/small_off.pdb")
+#protein_all_ON = parse_pdb("/gpfs/alpine/world-shared/stf011/atsaris/datagnn/datagnn_ras_2020/pdb/small_on.pdb")
+#protein_all_OFF = parse_pdb("/gpfs/alpine/world-shared/stf011/atsaris/datagnn/datagnn_ras_2020/pdb/small_off.pdb")
 
-#protein = parse_pdb("/gpfs/alpine/world-shared/stf011/atsaris/datagnn/datagnn_ras_2020/pdb/small_on_tmp.pdb")
+protein = parse_pdb("/gpfs/alpine/world-shared/stf011/atsaris/datagnn/datagnn_ras_2020/pdb/small_on_tmp.pdb")
 
+print(protein)
+
+exit(-1)
 for i in range(0, protein_all_ON.shape[0]):
     file_name = "/gpfs/alpine/world-shared/stf011/atsaris/datagnn/datagnn_ras_2020/graph/%d_ras_on_a.txt"%(i)
     tmp = protein_all_ON[i].astype(np.float32)
