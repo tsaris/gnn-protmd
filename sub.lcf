@@ -16,4 +16,5 @@ export PATH=/gpfs/alpine/proj-shared/stf011/atsaris/summit_envs/ibm_clone_torchg
 export LD_LIBRARY_PATH=/gpfs/alpine/proj-shared/stf011/atsaris/summit_envs/ibm_clone_torchgeo_env/conda_env/bin/:$LD_LIBRARY_PATH
 
 jsrun -n${nnodes} -a1 -c20 -g1 -r1 python train.py --rank-gpu configs/mpnn_md_summit.yaml
+#jsrun -n${nnodes} -a1 -c20 -g1 -r1 python train.py configs/mpnn_md_summit.yaml
 #jsrun -n${nnodes} -a1 -c20 -r1 python train.py configs/mpnn_bzrmd_summit.yaml

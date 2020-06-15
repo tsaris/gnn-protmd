@@ -10,6 +10,8 @@ residues = ['ALA', 'ARG', 'ASN', 'ASP', 'ASX', 'CYS', 'GLN',
             'MET', 'PHE', 'PRO', 'SER', 'THR', 'TRP', 'TYR',
             'UNK', 'VAL']
 
+dist_cut = 5
+
 def parse_pdb(path, label):
     # Parse residue, atom type and atomic coordinates
     protein_data = []
@@ -66,9 +68,10 @@ def parse_pdb(path, label):
         # Remove the edges and edge features with distance > 10 A (find an optimized way of this)
         list_ = []
         for i in range(0, len(dist3)):
-            if (dist3[i]>6): list_.append(i)
+            if (dist3[i]>dist_cut): list_.append(i)
         edge_np = np.delete(edge_np, list_, axis=0)
         dist3 = np.delete(dist3, list_, axis=0)
+        dist3 = dist3/dist_cut
 
         # Make the node type
         nd_labels = tf.keras.utils.to_categorical(protein[:,1], num_classes=23)
