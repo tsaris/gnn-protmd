@@ -42,9 +42,12 @@ class MPNN5(torch.nn.Module):
         self.lin1 = torch.nn.Linear(32, 16)
         self.lin2 = torch.nn.Linear(16, 1)
 
+        self.reg_params = self.conv1.parameters()
+        self.non_reg_params = self.conv2.parameters()
+
     def forward(self, data):
 
-        x, edge_index, edge_weight = data.x, data.edge_index, None
+        x, edge_index, edge_weight = data.x, data.edge_index, data.edge_attr
         x = F.relu(self.conv1(x, edge_index, edge_weight))
         x = F.dropout(x, training=self.training)
         x = self.conv2(x, edge_index, edge_weight)
