@@ -7,12 +7,8 @@ import numpy as np
 import random
 
 import torch
-import torch_geometric
-from torch_geometric.datasets import TUDataset
 from torch.utils.data import Dataset, random_split
-from torch_geometric.data import Data
-
-import tensorflow as tf
+from torch_geometric.data import Data, Batch
 
 def load_graph(filename):
     """Load one graph from an npz file"""
@@ -56,5 +52,5 @@ def get_datasets(n_train, n_valid, input_dir=None):
 
     # Split into train and validation
     train_data, valid_data = random_split(data, [n_train, n_valid])
-    loader_args = dict(collate_fn=torch_geometric.data.Batch.from_data_list)
+    loader_args = dict(collate_fn=Batch.from_data_list)
     return train_data, valid_data, loader_args
