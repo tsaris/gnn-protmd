@@ -27,7 +27,7 @@ class GNNTrainer(BaseTrainer):
             batch = batch.to(self.device)
             self.model.zero_grad()
             batch_output = self.model(batch)
-            # FIXME: converting labels to float for binary loss with TUDataset
+
             #print("type:", type(batch))
             #print("Batch:", batch)
 
@@ -57,6 +57,7 @@ class GNNTrainer(BaseTrainer):
         self.model.eval()
         sum_loss = 0
         sum_correct = 0
+        sum_pred = 0
 
         # Loop over batches
         for i, batch in enumerate(data_loader):
@@ -73,18 +74,21 @@ class GNNTrainer(BaseTrainer):
             batch_label = batch_target > 0.5
             n_correct = (batch_pred == batch_label).sum().item()
             sum_correct += n_correct
-            self.logger.debug('batch %i loss %.3f correct %i', i, loss, n_correct)
+            sum_pred += batch_pred.sum().item()
+            self.logger.debug('batch %i loss %.3f correct %i mean-pred %g',
+                              i, loss, n_correct, batch_pred.numpy().mean())
 
         # Summarize
         valid_loss = sum_loss / (i + 1)
         valid_acc = sum_correct / len(data_loader.sampler)
+        mean_pred = sum_pred / len(data_loader.sampler)
         self.logger.debug('Processed %i samples in %i batches',
                           len(data_loader.sampler), i + 1)
-        self.logger.info('Validation loss: %.4f acc: %.4f' %
-                         (valid_loss, valid_acc))
+        self.logger.info('Validation loss: %.4f acc: %.4f mean-pred: %g',
+                         valid_loss, valid_acc, mean_pred)
 
         # Return summaries
-        return dict(valid_loss=valid_loss, valid_acc=valid_acc)
+        return dict(valid_loss=valid_loss, valid_acc=valid_acc, mean_pred=mean_pred)
 
 def get_trainer(**kwargs):
     return GNNTrainer(**kwargs)
