@@ -13,19 +13,18 @@ from torch_geometric.data import Data, Batch
 def load_graph(filename):
     """Load one graph from an npz file"""
 
-    npzfile = np.load(filename)
-
-    edge_np = npzfile['edgelist']
-    dist3 = npzfile['distlist']
-    nd_labels = npzfile['nodefeat']
+    with np.load(filename) as npzfile:
+        edge_np = npzfile['edgelist']
+        dist3 = npzfile['distlist']
+        nd_labels = npzfile['nodefeat']
 
     edge_index = torch.tensor(edge_np, dtype=torch.long)
     edge_attr = torch.tensor(dist3, dtype=torch.float)
     x = torch.tensor(nd_labels, dtype=torch.float)
     
     # Make the labels
-    if (filename.endswith('off.npz')): y = torch.tensor([0], dtype=torch.int)
-    if (filename.endswith('on.npz')): y = torch.tensor([1], dtype=torch.int)
+    if filename.endswith('off.npz'): y = torch.tensor([0], dtype=torch.int)
+    if filename.endswith('on.npz'): y = torch.tensor([1], dtype=torch.int)
 
     return Data(x=x, edge_index=edge_index.t().contiguous(), y=y, edge_attr=edge_attr)
 
