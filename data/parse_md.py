@@ -1,9 +1,5 @@
 """
-TUD Datasets
-
-See:
-* https://pytorch-geometric.readthedocs.io/en/latest/modules/datasets.html#torch_geometric.datasets.TUDataset
-* https://chrsmrrs.github.io/datasets/docs/datasets/
+Molecular dynamics Datasets
 """
 
 import os
@@ -19,6 +15,7 @@ from torch_geometric.data import Data
 import tensorflow as tf
 
 def load_graph(filename):
+    """Load one graph from an npz file"""
 
     npzfile = np.load(filename)
 
@@ -37,7 +34,7 @@ def load_graph(filename):
     return Data(x=x, edge_index=edge_index.t().contiguous(), y=y, edge_attr=edge_attr)
 
 class MDGraphDataset(Dataset):
-    """PyTorch dataset specification for hit graphs"""
+    """PyTorch dataset specification for MD protein graphs"""
 
     def __init__(self, input_dir=None, n_samples=None):
         input_dir = os.path.expandvars(input_dir)
@@ -46,7 +43,6 @@ class MDGraphDataset(Dataset):
         random.shuffle(filenames)
         random.shuffle(filenames)
         self.filenames = filenames if n_samples is None else filenames[:n_samples]
-
 
     def __getitem__(self, index):
         return load_graph(self.filenames[index])
