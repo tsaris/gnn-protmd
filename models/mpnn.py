@@ -8,7 +8,7 @@ Chemistry paper.
 import torch
 import torch.nn.functional as F
 import torch_geometric
-from torch_geometric.nn import NNConv, global_add_pool
+from torch_geometric.nn import NNConv, global_add_pool, global_mean_pool
 
 # Locals
 from utils.nn import make_mlp
@@ -46,8 +46,9 @@ class MPNN(torch.nn.Module):
         h = F.relu(self.conv2(h, data.edge_index, data.edge_attr))
 
         # Aggregate node features
-        u = global_add_pool(h, data.batch)
-
+        #u = global_add_pool(h, data.batch)
+        u = global_mean_pool(h, data.batch)
+        
         # Graph-global output
         return self.mlp(u).squeeze(-1)
 

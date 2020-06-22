@@ -43,8 +43,8 @@ class MDGraphDataset(Dataset):
         input_dir = os.path.expandvars(input_dir)
         filenames = sorted([os.path.join(input_dir, f) for f in os.listdir(input_dir)
                             if f.endswith('.npz')])
-        random.shuffle(filenames)
-        random.shuffle(filenames)
+        #random.shuffle(filenames)
+        #random.shuffle(filenames)
         self.filenames = filenames if n_samples is None else filenames[:n_samples]
 
 

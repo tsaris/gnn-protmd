@@ -25,7 +25,7 @@ from torch.nn import Sequential, Linear, ReLU, GRU
 from torch_geometric.nn import Set2Set
 
 # Locals
-from utils.nn import make_mlp
+from utils.nn import make_mlp#, Set2Set
 
 class MPNN3(torch.nn.Module):
     """Message-passing graph neural network
@@ -36,18 +36,17 @@ class MPNN3(torch.nn.Module):
 
     def __init__(self, n_node_features, n_edge_features, hidden_size, n_outputs=1):
         super().__init__()
-        dim = 32
-        self.lin0 = torch.nn.Linear(n_node_features, dim)
+        self.lin0 = torch.nn.Linear(n_node_features, hidden_size)
 
-        self.conv1 = NNConv(dim, hidden_size,
+        self.conv1 = NNConv(hidden_size, hidden_size,
                             make_mlp(n_edge_features,
-                                     [dim*hidden_size],
+                                     [hidden_size*hidden_size],
                                      output_activation=None))
-        self.gru = GRU(dim, dim)
-        self.set2set = Set2Set(dim, processing_steps=3)
+        self.gru = GRU(hidden_size, hidden_size)
+        self.set2set = Set2Set(hidden_size, processing_steps=3)
  
-        self.lin1 = torch.nn.Linear(2 * dim, dim)
-        self.lin2 = torch.nn.Linear(dim, 1)
+        self.lin1 = torch.nn.Linear(2 * hidden_size, hidden_size)
+        self.lin2 = torch.nn.Linear(hidden_size, 1)
 
     def forward(self, data):
         out = F.relu(self.lin0(data.x))
