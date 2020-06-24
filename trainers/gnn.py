@@ -74,9 +74,10 @@ class GNNTrainer(BaseTrainer):
             batch_label = batch_target > 0.5
             n_correct = (batch_pred == batch_label).sum().item()
             sum_correct += n_correct
-            sum_pred += batch_pred.sum().item()
-            self.logger.debug('batch %i loss %.3f correct %i mean-pred %g',
-                              i, loss, n_correct, batch_pred.numpy().mean())
+            #sum_pred += batch_pred.sum().item()
+            #self.logger.debug('batch %i loss %.3f correct %i mean-pred %g',
+            #                  i, loss, n_correct, batch_pred.numpy().mean())
+            self.logger.debug('batch %i loss %.3f correct %i', i, loss, n_correct)
 
         # Summarize
         valid_loss = sum_loss / (i + 1)
