@@ -74,6 +74,7 @@ class GNNTrainer(BaseTrainer):
             batch_label = batch_target > 0.5
             n_correct = (batch_pred == batch_label).sum().item()
             sum_correct += n_correct
+            # TODO fix this, not working on GPU
             #sum_pred += batch_pred.sum().item()
             #self.logger.debug('batch %i loss %.3f correct %i mean-pred %g',
             #                  i, loss, n_correct, batch_pred.numpy().mean())
@@ -90,6 +91,22 @@ class GNNTrainer(BaseTrainer):
 
         # Return summaries
         return dict(valid_loss=valid_loss, valid_acc=valid_acc, mean_pred=mean_pred)
+
+    @torch.no_grad()
+    def predict(self, data_loader):
+        sum_correct = 0
+        for batch in data_loader:
+            batch_output = self.model(batch)
+            batch_target = batch.y.float()
+            batch_pred = batch_output > 0
+            batch_label = batch_target > 0.5
+            n_correct = (batch_pred == batch_label).sum().item()
+            sum_correct += n_correct
+
+        # Summarize
+        valid_acc = sum_correct / len(data_loader.sampler)
+        print(valid_acc)
+
 
 def get_trainer(**kwargs):
     return GNNTrainer(**kwargs)

@@ -3,7 +3,7 @@ import numpy as np
 
 input_dir = '/gpfs/alpine/world-shared/stf011/atsaris/datagnn/datagnn_ras_2020/graph_full_kRas'
 cnt = 0
-freq = 10000
+freq = 10
 
 filenames = os.listdir(input_dir)
 num_list_on = []

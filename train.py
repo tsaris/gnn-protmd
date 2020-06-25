@@ -29,6 +29,7 @@ def parse_args():
     add_arg('--rank-gpu', action='store_true')
     add_arg('--ranks-per-node', type=int, default=8)
     add_arg('--interactive', action='store_true')
+    add_arg('--resume', action='store_true', help='Resume from last checkpoint')
     return parser.parse_args()
 
 def load_config(config_file):
@@ -78,6 +79,10 @@ def main():
     trainer.build_model(optimizer=optimizer_config, **model_config)
     if rank == 0:
         trainer.print_model_summary()
+
+    # Checkpoint resume
+    if args.resume:
+        trainer.load_checkpoint()
 
     # Run the training
     train_config = config['training']

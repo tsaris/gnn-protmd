@@ -87,11 +87,27 @@ class BaseTrainer(object):
         """Write a checkpoint for the model"""
         # TODO: needs update
         assert self.output_dir is not None
+
+        model_state_dict = (self.model.state_dict())
+        checkpoint = dict(checkpoint_id=checkpoint_id,
+                          model=model_state_dict,
+                          optimizer=self.optimizer.state_dict())
+
         checkpoint_dir = os.path.join(self.output_dir, 'checkpoints')
         checkpoint_file = 'model_checkpoint_%03i.pth.tar' % checkpoint_id
         os.makedirs(checkpoint_dir, exist_ok=True)
-        torch.save(dict(model=self.model.state_dict()),
-                   os.path.join(checkpoint_dir, checkpoint_file))
+        #torch.save(dict(model=self.model.state_dict()),
+        torch.save(checkpoint, os.path.join(checkpoint_dir, checkpoint_file))
+
+    def load_checkpoint(self, checkpoint_id=-1):
+        assert self.output_dir is not None
+
+        checkpoint_dir = os.path.join(self.output_dir, 'checkpoints')
+        checkpoint_file = os.path.join(
+            checkpoint_dir, 'model_checkpoint_119.pth.tar')
+        checkpoint = torch.load(checkpoint_file, map_location=self.device)
+        self.model.load_state_dict(checkpoint['model'])
+        self.optimizer.load_state_dict(checkpoint['optimizer'])
 
     def train_epoch(self, data_loader):
         """Virtual method to train a model"""
