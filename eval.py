@@ -45,19 +45,18 @@ def load_config(config_file):
 def get_output_dir(config):
     return os.path.expandvars(config['output_dir'])
 
-def get_input_dir(config):
-    return os.path.expandvars(config['data']['input_dir'])
+def get_input_list(config):
+    return os.path.expandvars(config['data']['filelist'])
 
 def get_dataset(config):
-    return MDGraphDataset(get_input_dir(config))
+    return MDGraphDataset(filelist=get_input_list(config))
 
-def get_test_data_loader(config, n_test=16, batch_size=1):
+def get_test_data_loader(config, batch_size=1):
     # Take the test set from the back
     full_dataset = get_dataset(config)
-    test_indices = len(full_dataset) - 1 - torch.arange(n_test)
-    test_dataset = Subset(full_dataset, test_indices.tolist())
-    return DataLoader(test_dataset, batch_size=batch_size,
+    return DataLoader(full_dataset, batch_size=batch_size,
                       collate_fn=Batch.from_data_list)
+
 
 def main():
     """Main function"""
@@ -89,8 +88,7 @@ def main():
     print('Parameters:', sum(p.numel() for p in trainer.model.parameters()))
     
     # Load the datasets
-    n_test = 1
-    test_loader = get_test_data_loader(config, n_test=n_test)
+    test_loader = get_test_data_loader(config)
 
     ###### I have hardcoded the value of the checkpoint... need to change to 099...!!!!!!!!!!!
     trainer.predict(test_loader)

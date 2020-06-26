@@ -1,0 +1,24 @@
+#!/bin/bash
+# Begin LSF directives
+#BSUB -P stf011
+#BSUB -J gnn
+#BSUB -o logs/gnn.o%J
+#BSUB -W 0:30
+#BSUB -nnodes 1
+#BSUB -alloc_flags "nvme smt4"
+#BSUB -N
+#BSUB -q debug
+# End LSF directives and begin shell commands
+
+nnodes=$(cat ${LSB_DJOB_HOSTFILE} | sort | uniq | grep -v login | grep -v batch | wc -l)
+
+# SummitDev
+#export PATH=/gpfs/alpine/proj-shared/stf011/atsaris/summit_envs/ibm_clone_torchgeo_env_new_sumDev/conda_env/bin/:$PATH 
+#export LD_LIBRARY_PATH=/gpfs/alpine/proj-shared/stf011/atsaris/summit_envs/ibm_clone_torchgeo_env_new_sumDev/conda_env/bin/:$LD_LIBRARY_PATH
+
+#Summit
+export PATH=/gpfs/alpine/proj-shared/stf011/atsaris/summit_envs/ibm_clone_torchgeo_env_new_sumDev/conda_env/bin/:$PATH 
+export LD_LIBRARY_PATH=/gpfs/alpine/proj-shared/stf011/atsaris/summit_envs/ibm_clone_torchgeo_env_new_sumDev/conda_env/bin/:$LD_LIBRARY_PATH
+
+echo "file graph_full_kRas_eval_9, 099 checkpoint new model"
+jsrun -n${nnodes} -a1 -c20 -g1 -r1 python eval.py configs/mpnn_md_summit_eval.yaml
