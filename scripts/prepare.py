@@ -28,10 +28,10 @@ def parse_pdb(path, label, sample_fq=1):
             # Make sure itsn't the EOF
             if len(line) == 0: break
 
-            if line[0] == 'MODEL':
+            if (line[0] == 'MODEL') and (cnt%sample_fq) == 0:
                 listSim = []
 
-            if line[0] == 'ATOM' and line[2] == 'CA':
+            if line[0] == 'ATOM' and line[2] == 'CA' and (cnt%sample_fq) == 0:
                 tmp = []
                 res = residues.index(line[3])
                 tmp.append(str(res))
@@ -39,8 +39,8 @@ def parse_pdb(path, label, sample_fq=1):
                 pos = tmp + pos
                 listSim.append(pos)
 
-            if line[0] == 'ENDMDL':
-                npSim = np.asarray(listSim, dtype=np.float32)                
+            if line[0] == 'ENDMDL' and (cnt%sample_fq) == 0:
+                npSim = np.asarray(listSim, dtype=np.float32)      
                 cent = np.mean(npSim[:,1:4], axis=0)
                 res_depth = np.array([euclidean(cent, c) for c in npSim[:,1:4]])
                 res_depth_perc = [1- perc(res_depth, d)/100.0 for d in res_depth]
@@ -72,16 +72,13 @@ def parse_pdb(path, label, sample_fq=1):
                 nd_labels = np.hstack((nd_labels, npSim[:,[0]]))
 
                 # Save the file
-                file_name = "/gpfs/alpine/world-shared/stf011/atsaris/datagnn/datagnn_ras_2020/graph_full_kRas_/%d_ras_%s.npz"%(cnt, label)
+                file_name = "/gpfs/alpine/world-shared/stf011/atsaris/datagnn/datagnn_ras_2020/graph_kRas_monomer_large/%d_ras_%s.npz"%(cnt, label)
                 np.savez(file_name, edgelist=edge_np, distlist=dist3, nodefeat=nd_labels)
+
+            if line[0] == 'ENDMDL': 
                 cnt+=1
-                
 
 
 
-parse_pdb("/gpfs/alpine/world-shared/bif112/AllosteryLearning_GraphNeuralNet/whole_traj/TTR/0-100ns_3NEX_holo.pdb", "on")
-parse_pdb("/gpfs/alpine/world-shared/bif112/AllosteryLearning_GraphNeuralNet/whole_traj/TTR/0-100ns_3NEX_apo.pdb", "off")
-
-#parse_pdb("/gpfs/alpine/world-shared/stf011/atsaris/datagnn/datagnn_ras_2020/pdb/small_on.pdb", "on")
-#parse_pdb("/gpfs/alpine/world-shared/stf011/atsaris/datagnn/datagnn_ras_2020/pdb/small_off.pdb", "off")
-#parse_pdb("/gpfs/alpine/world-shared/stf011/atsaris/datagnn/datagnn_ras_2020/pdb/small_on_tmp.pdb", "on")
+parse_pdb("/gpfs/alpine/world-shared/stf011/atsaris/datagnn/datagnn_ras_2020/pdb_data/kras_g12c_on.pdb", "on", sample_fq=10)
+parse_pdb("/gpfs/alpine/world-shared/stf011/atsaris/datagnn/datagnn_ras_2020/pdb_data/kras_g12c_off.pdb", "off", sample_fq=10)

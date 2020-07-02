@@ -1,7 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-test = np.load('/gpfs/alpine/world-shared/stf011/atsaris/gnn_results_md_out/mpnn_bzrmd_sDev_eval_newMDL/summaries_0.npz')
+test = np.load('/gpfs/alpine/world-shared/stf011/atsaris/gnn_results_md_out/mpnn_bzrmd_sDev_KRAS_r0_full_md11/summaries_0.npz')
 print(test.files)
 
 # Loss
@@ -10,7 +10,7 @@ plt.plot(test['valid_loss'])
 plt.title('model loss')
 plt.ylabel('loss')
 plt.xlabel('epoch')
-plt.legend(['train', 'test'], loc='upper left')
+plt.legend(['train', 'val'], loc='upper left')
 plt.show()
 
 # Acc
@@ -18,7 +18,7 @@ plt.plot(test['valid_acc'])
 plt.title('model accuracy')
 plt.ylabel('accuracy')
 plt.xlabel('epoch')
-plt.legend(['test'], loc='upper left')
+plt.legend(['val'], loc='upper left')
 plt.show()
 
 exit(-1)

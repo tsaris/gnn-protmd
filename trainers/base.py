@@ -57,7 +57,13 @@ class BaseTrainer(object):
             self.model = DistributedDataParallel(self.model, device_ids=device_ids)
 
         # Construct the optimizer
-        self.optimizer = self._build_optimizer(self.model, **optimizer)
+        if (model_args['name'] == 'mpnn5'):
+            self.optimizer = torch.optim.Adam([
+                dict(params=self.model.reg_params, weight_decay=5e-4),
+                dict(params=self.model.non_reg_params, weight_decay=0)
+            ], lr=0.01)
+        else:
+            self.optimizer = self._build_optimizer(self.model, **optimizer)
 
         # Construct the loss function
         self.loss_func = getattr(torch.nn.functional, loss_function)

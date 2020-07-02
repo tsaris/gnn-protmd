@@ -1,8 +1,8 @@
 trainer: gnn
-output_dir: /gpfs/alpine/world-shared/stf011/atsaris/gnn_results_md_out/mpnn_bzrmd_sDev_KRAS_r0_full_rn0rn1
+output_dir: /gpfs/alpine/world-shared/stf011/atsaris/gnn_results_md_out/mpnn_bzrmd_sDev_KRAS_r0_full_md11
 
 data:
-    name: parse_md
+    name: parse_md_gcn
     n_train: 1
     n_valid: 1
     ### input_dir: '/gpfs/alpine/world-shared/stf011/atsaris/datagnn/datagnn_ras_2020/graph_full_kRas_val'
@@ -10,7 +10,7 @@ data:
     batch_size: 32
 
 model:
-    name: mpnn3
+    name: mpnn5
     n_node_features: 25
     n_edge_features: 1 #6
     hidden_size: 16

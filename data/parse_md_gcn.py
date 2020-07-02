@@ -11,7 +11,7 @@ import torch
 from torch.utils.data import Dataset, random_split
 from torch_geometric.data import Data, Batch
 
-import random
+from scipy.ndimage import gaussian_filter1d
 
 def load_graph(filename):
     """Load one graph from an npz file"""
@@ -20,6 +20,8 @@ def load_graph(filename):
         edge_np = npzfile['edgelist']
         dist3 = npzfile['distlist']
         nd_labels = npzfile['nodefeat']
+
+    dist3 = gaussian_filter1d(dist3.reshape(dist3.shape[0]), 0.5)
 
     edge_index = torch.tensor(edge_np, dtype=torch.long)
     edge_attr = torch.tensor(dist3, dtype=torch.float)

@@ -19,7 +19,7 @@ from utils.logging import config_logging
 from utils.distributed import init_workers
 
 import torch
-from data.parse_md import MDGraphDataset
+from data.parse_md_gcn import MDGraphDataset
 from torch.utils.data import Subset, DataLoader
 from torch_geometric.data import Batch
 
@@ -49,6 +49,7 @@ def get_input_list(config):
     return os.path.expandvars(config['data']['filelist'])
 
 def get_dataset(config):
+    print(get_input_list(config))
     return MDGraphDataset(filelist=get_input_list(config))
 
 def get_test_data_loader(config, batch_size=1):
