@@ -1,18 +1,17 @@
 trainer: gnn
-output_dir: /gpfs/alpine/world-shared/stf011/atsaris/gnn_results_md_out/mpnn_bzrmd_sDev_KRAS_r0_full_rn0rn1
+output_dir: /gpfs/alpine/world-shared/stf011/atsaris/gnn_results_md_out/mpnn_bzrmd_sDev_new1
 
 data:
     name: parse_md
     n_train: 1
     n_valid: 1
-    ### input_dir: '/gpfs/alpine/world-shared/stf011/atsaris/datagnn/datagnn_ras_2020/graph_full_kRas_val'
-    filelist: '/ccs/proj/stf011/atsaris/may2020/gnn-protmd/filelists/val_KRAS_r2_full.csv'
+    filelist: '/ccs/proj/stf011/atsaris/may2020/gnn-protmd/filelists/KRAS_r2_full_new22.csv'
     batch_size: 32
 
 model:
     name: mpnn3
-    n_node_features: 25
-    n_edge_features: 1 #6
+    n_node_features: 24
+    n_edge_features: 3 #6
     hidden_size: 16
     n_outputs: 1
     loss_function: binary_cross_entropy_with_logits

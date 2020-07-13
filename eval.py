@@ -19,7 +19,7 @@ from utils.logging import config_logging
 from utils.distributed import init_workers
 
 import torch
-from data.parse_md_gcn import MDGraphDataset
+from data.parse_md import MDGraphDataset
 from torch.utils.data import Subset, DataLoader
 from torch_geometric.data import Batch
 

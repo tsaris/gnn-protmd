@@ -1,9 +1,9 @@
 import os, re
 import numpy as np
 
-input_dir = '/gpfs/alpine/world-shared/stf011/atsaris/datagnn/datagnn_ras_2020/KRAS_r2_full'
+input_dir = '/gpfs/alpine/world-shared/stf011/atsaris/datagnn/datagnn_ras_2020/KRAS_r9_sup'
 cnt = 0
-freq = 1
+freq = 10
 
 filenames = os.listdir(input_dir)
 num_list_on = []

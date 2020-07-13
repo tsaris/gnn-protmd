@@ -1,18 +1,18 @@
 trainer: gnn
-output_dir: /gpfs/alpine/world-shared/stf011/atsaris/gnn_results_md_out/mpnn_bzrmd_sDev_eval_bigepochs
+output_dir: /gpfs/alpine/world-shared/stf011/atsaris/gnn_results_md_out/mpnn_bzrmd_sDev_new
 
 data:
     name: parse_md
-    n_train: 18000
-    n_valid: 2000
+    n_train: 1
+    n_valid: 1
     ### input_dir: '/gpfs/alpine/stf011/world-shared/atsaris/datagnn/datagnn_ras_2020/graph_kRas_monomer_large'
-    filelist: '/ccs/proj/stf011/atsaris/may2020/gnn-protmd/filelists/train_KRAS_r0_full.csv'
+    filelist: '/ccs/proj/stf011/atsaris/may2020/gnn-protmd/filelists/KRAS_r0_non.train.csv'
     batch_size: 32
 
 model:
     name: mpnn3
-    n_node_features: 25
-    n_edge_features: 1 #6
+    n_node_features: 24
+    n_edge_features: 3
     hidden_size: 16
     n_outputs: 1
     loss_function: binary_cross_entropy_with_logits
@@ -22,4 +22,4 @@ optimizer:
     lr: 0.001
 
 training:
-    n_epochs: 1000
+    n_epochs: 1
