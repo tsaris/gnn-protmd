@@ -4,8 +4,10 @@ PyTorch dataset specifications.
 
 import importlib
 
-from torch.utils.data import DataLoader
+#from torch.utils.data import DataLoader
 from torch.utils.data.distributed import DistributedSampler
+
+from torch_geometric.data import DataLoader
 
 def get_datasets(name, **data_args):
     """Factory function for importing datasets from local modules"""
@@ -28,12 +30,21 @@ def get_data_loaders(name, batch_size, distributed=False,
         valid_sampler = DistributedSampler(valid_dataset)
 
     # Data loaders
-    train_loader = DataLoader(train_dataset, batch_size=batch_size,
-                              sampler=train_sampler,
-                              shuffle=(train_sampler is None),
-                              **loader_args)
-    valid_loader = (DataLoader(valid_dataset, batch_size=batch_size,
-                               sampler=valid_sampler,
-                               **loader_args)
-                    if valid_dataset is not None else None)
+    print(type(train_dataset))
+    for i in train_dataset:
+        print(i)
+
+
+    #train_loader = DataLoader(train_dataset, batch_size=batch_size,
+    #                          sampler=train_sampler,
+    #                          shuffle=(train_sampler is None),
+    #                          **loader_args)
+
+    train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=(train_sampler is None))
+    valid_loader = DataLoader(valid_dataset, batch_size=batch_size)
+
+    #valid_loader = (DataLoader(valid_dataset, batch_size=batch_size,
+    #                           sampler=valid_sampler,
+    #                           **loader_args)
+    #                if valid_dataset is not None else None)
     return train_loader, valid_loader
