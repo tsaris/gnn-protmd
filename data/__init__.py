@@ -29,11 +29,6 @@ def get_data_loaders(name, batch_size, distributed=False,
     if distributed and use_dist_sampler_valid and valid_dataset is not None:
         valid_sampler = DistributedSampler(valid_dataset)
 
-    # Data loaders
-    print(type(train_dataset))
-    for i in train_dataset:
-        print(i)
-
 
     #train_loader = DataLoader(train_dataset, batch_size=batch_size,
     #                          sampler=train_sampler,

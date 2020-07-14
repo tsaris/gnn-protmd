@@ -16,9 +16,6 @@ import random
 def load_graph(filename):
     """Load one graph from an npz file"""
 
-
-    filename = "/gpfs/alpine/world-shared/stf011/atsaris/datagnn/datagnn_ras_2020/KRAS_r0_non/0_ras_off.npz"
-
     with np.load(filename) as npzfile:
         edge_np = npzfile['edgelist']
         dist3 = npzfile['distlist']
@@ -33,10 +30,11 @@ def load_graph(filename):
     if filename.endswith('on.npz'): y = torch.tensor([1], dtype=torch.int)
 
     tmp1 = Data(x=x, edge_index=edge_index.t().contiguous(), y=y, edge_attr=edge_attr)
-    tmp2 = Data(x=x, edge_index=edge_index.t().contiguous(), y=y, edge_attr=edge_attr)
-    tmp3 = Data(x=x, edge_index=edge_index.t().contiguous(), y=y, edge_attr=edge_attr)
-    
-    return [tmp1, tmp3, tmp3]
+    #tmp2 = Data(x=x, edge_index=edge_index.t().contiguous(), y=y, edge_attr=edge_attr)
+    #tmp3 = Data(x=x, edge_index=edge_index.t().contiguous(), y=y, edge_attr=edge_attr)
+
+    return [tmp1]
+    #return [tmp1, tmp3, tmp3]
     #return Data(x=x, edge_index=edge_index.t().contiguous(), y=y, edge_attr=edge_attr)
 
 class MDGraphDataset(Dataset):

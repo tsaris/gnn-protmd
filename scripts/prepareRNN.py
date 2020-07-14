@@ -41,11 +41,6 @@ def parse_pdb(path, label, sample_fq=1):
 
             if line[0] == 'ENDMDL' and (cnt%sample_fq) == 0:
                 npSim = np.asarray(listSim, dtype=np.float32)
-                #cent = np.mean(npSim[:,1:4], axis=0)
-                #res_depth = np.array([euclidean(cent, c) for c in npSim[:,1:4]])
-                #res_depth_perc = [1- perc(res_depth, d)/100.0 for d in res_depth]
-                #res_depth_perc = np.array(res_depth_perc, dtype=np.float32)
-                #npSim = np.hstack((res_depth_perc.reshape(res_depth_perc.shape[0],1), npSim))
 
                 # Make all the combinations
                 edge_np = combinations(np.arange(npSim.shape[0]), 2)
@@ -84,22 +79,15 @@ def parse_pdb(path, label, sample_fq=1):
                 distZ3 = np.delete(dist3, list_, axis=0)
                 distXYZ = np.hstack((distX3, distY3, distZ3))
 
-                # I don't really need to do this, the Euclidean Distance doesn't saved
-                #dist3 = np.delete(dist3, list_, axis=0)
-                #dist3 = dist3/dist_cut # Do later on so I can use absoture number for the cut
-
                 # Make the node type
                 nd_labels = tf.keras.utils.to_categorical(npSim[:,0], num_classes=24)
-                # Add node feature of relative position
-                #nd_labels = np.hstack((nd_labels, npSim[:,[0]]))
 
                 # Save the file
-                file_name = "/gpfs/alpine/stf011/world-shared/atsaris/datagnn/datagnn_ras_2020/KRAS_r0_full_new/%d_ras_%s.npz"%(cnt, label)
+                file_name = "/gpfs/alpine/stf011/world-shared/atsaris/datagnn/datagnn_ras_2020/pdb_cnn/graphs/%d_ras_%s.npz"%(cnt, label)
                 np.savez(file_name, edgelist=edge_np, distlist=distXYZ, nodefeat=nd_labels)
 
             if line[0] == 'ENDMDL': 
                 cnt+=1
 
 
-parse_pdb("/gpfs/alpine/stf011/world-shared/atsaris/datagnn/datagnn_ras_2020/pdb_cnn/ras_rn0_on.pdb", "on", sample_fq=10)
-parse_pdb("/gpfs/alpine/stf011/world-shared/atsaris/datagnn/datagnn_ras_2020/pdb_cnn/ras_rn0_off.pdb", "off", sample_fq=10)
+parse_pdb("/gpfs/alpine/stf011/world-shared/atsaris/datagnn/datagnn_ras_2020/pdb_cnn/tmp_small.pdb", "on", sample_fq=1)

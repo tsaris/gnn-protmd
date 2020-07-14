@@ -28,13 +28,6 @@ class GNNTrainer(BaseTrainer):
             self.model.zero_grad()
             batch_output = self.model(batch)
 
-            #print("type:", type(batch))
-            #print("Batch:", batch)
-
-            #print("nodes Vs node_features:", batch.x.shape)
-            #print("2 Vs edges:", batch.edge_index.shape)
-            #print("edges Vs edge features", batch.edge_attr.shape)
-
             #batch_target = batch.y.float()
             batch_target = batch[0].y.float()
             batch_loss = self.loss_func(batch_output, batch_target)
