@@ -91,7 +91,8 @@ class GNNTrainer(BaseTrainer):
         sum_correct = 0
         for batch in data_loader:
             batch_output = self.model(batch)
-            batch_target = batch.y.float()
+            #batch_target = batch.y.float()
+            batch_target = batch[0].y.float()
             batch_pred = batch_output > 0
             batch_label = batch_target > 0.5
             n_correct = (batch_pred == batch_label).sum().item()

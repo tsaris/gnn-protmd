@@ -17,25 +17,40 @@ def load_graph(filename):
     """Load one graph from an npz file"""
 
     with np.load(filename) as npzfile:
-        edge_np = npzfile['edgelist']
-        dist3 = npzfile['distlist']
-        nd_labels = npzfile['nodefeat']
+        edge_np_0 = npzfile['edgelist_0']
+        dist3_0 = npzfile['distlist_0']
+        nd_labels_0 = npzfile['nodefeat_0']
 
-    edge_index = torch.tensor(edge_np, dtype=torch.long)
-    edge_attr = torch.tensor(dist3, dtype=torch.float)
-    x = torch.tensor(nd_labels, dtype=torch.float)
+        edge_np_1 = npzfile['edgelist_1']
+        dist3_1 = npzfile['distlist_1']
+        nd_labels_1 = npzfile['nodefeat_1']
+
+        edge_np_2 = npzfile['edgelist_2']
+        dist3_2 = npzfile['distlist_2']
+        nd_labels_2 = npzfile['nodefeat_2']
+
+
+    edge_index_0 = torch.tensor(edge_np_0, dtype=torch.long)
+    edge_attr_0 = torch.tensor(dist3_0, dtype=torch.float)
+    x_0 = torch.tensor(nd_labels_0, dtype=torch.float)
+
+    edge_index_1 = torch.tensor(edge_np_1, dtype=torch.long)
+    edge_attr_1 = torch.tensor(dist3_1, dtype=torch.float)
+    x_1 = torch.tensor(nd_labels_1, dtype=torch.float)
+
+    edge_index_2 = torch.tensor(edge_np_2, dtype=torch.long)
+    edge_attr_2 = torch.tensor(dist3_2, dtype=torch.float)
+    x_2 = torch.tensor(nd_labels_2, dtype=torch.float)
     
     # Make the labels
     if filename.endswith('off.npz'): y = torch.tensor([0], dtype=torch.int)
     if filename.endswith('on.npz'): y = torch.tensor([1], dtype=torch.int)
 
-    tmp1 = Data(x=x, edge_index=edge_index.t().contiguous(), y=y, edge_attr=edge_attr)
-    #tmp2 = Data(x=x, edge_index=edge_index.t().contiguous(), y=y, edge_attr=edge_attr)
-    #tmp3 = Data(x=x, edge_index=edge_index.t().contiguous(), y=y, edge_attr=edge_attr)
+    tmp0 = Data(x=x_0, edge_index=edge_index_0.t().contiguous(), y=y, edge_attr=edge_attr_0)
+    tmp1 = Data(x=x_1, edge_index=edge_index_1.t().contiguous(), y=y, edge_attr=edge_attr_1)
+    tmp2 = Data(x=x_2, edge_index=edge_index_2.t().contiguous(), y=y, edge_attr=edge_attr_2)
 
-    return [tmp1]
-    #return [tmp1, tmp3, tmp3]
-    #return Data(x=x, edge_index=edge_index.t().contiguous(), y=y, edge_attr=edge_attr)
+    return [tmp0, tmp1, tmp2]
 
 class MDGraphDataset(Dataset):
     """PyTorch dataset specification for MD protein graphs"""

@@ -19,8 +19,8 @@ from utils.logging import config_logging
 from utils.distributed import init_workers
 
 import torch
-from data.parse_md import MDGraphDataset
-from torch.utils.data import Subset, DataLoader
+from data.parse_mdRNN import MDGraphDataset
+from torch_geometric.data import DataLoader
 from torch_geometric.data import Batch
 
 
@@ -55,8 +55,7 @@ def get_dataset(config):
 def get_test_data_loader(config, batch_size=1):
     # Take the test set from the back
     full_dataset = get_dataset(config)
-    return DataLoader(full_dataset, batch_size=batch_size,
-                      collate_fn=Batch.from_data_list)
+    return DataLoader(full_dataset, batch_size=batch_size)
 
 
 def main():
