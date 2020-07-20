@@ -15,7 +15,7 @@ residues = ['1ALA', '2GLU', '3ASP', '4VAL', '5GLY', '6SER',
 
 dist_cut = 5
 
-def parse_pdb(path, label, sample_fq=1):
+def parse_pdb(path):
 
     listSim = []
     cnt = 0
@@ -24,38 +24,34 @@ def parse_pdb(path, label, sample_fq=1):
     with open(path, 'r') as f:
         line = f.readline()
 
+        tmp_line = line.split()
+        step = tmp_line[6]
+
         while line:
             line = f.readline()
             line = line.split()
 
             # Make sure itsn't the EOF
             if len(line) == 0: break
-
-            if (line[0] == 'MODEL') and (cnt%sample_fq) == 0:
-                listSim = []
-
-            if line[0] == 'ATOM' and line[2] == 'CA' and (cnt%sample_fq) == 0:
+            
+            if line[0] in residues:
                 tmp = []
-                res = residues.index(line[3])
+                res = residues.index(line[0])
                 tmp.append(str(res))
-                pos = line[5:8]
+                pos = line[3:6]
                 pos = tmp + pos
                 listSim.append(pos)
 
-            if line[0] == 'ENDMDL' and (cnt%sample_fq) == 0:
+            # It will go n-1 times
+            if line[0] == 'Protein' and int(line[6]) != step:
                 npSim = np.asarray(listSim, dtype=np.float32)
-                #cent = np.mean(npSim[:,1:4], axis=0)
-                #res_depth = np.array([euclidean(cent, c) for c in npSim[:,1:4]])
-                #res_depth_perc = [1- perc(res_depth, d)/100.0 for d in res_depth]
-                #res_depth_perc = np.array(res_depth_perc, dtype=np.float32)
-                #npSim = np.hstack((res_depth_perc.reshape(res_depth_perc.shape[0],1), npSim))
 
                 # Make all the combinations
                 edge_np = combinations(np.arange(npSim.shape[0]), 2)
                 edge_np = np.array(list(edge_np))
                 edge_np_f = np.flip(edge_np)
                 edge_np = np.concatenate((edge_np, edge_np_f[::-1]), axis=0)
-                
+
                 # Edge features
                 distX = np.array(pdist(npSim[:,[1]].astype('float')))
                 distX2 = np.concatenate((distX, distX), axis=0)
@@ -88,8 +84,8 @@ def parse_pdb(path, label, sample_fq=1):
                 distXYZ = np.hstack((distX3, distY3, distZ3))
 
                 # I don't really need to do this, the Euclidean Distance doesn't saved
-                #dist3 = np.delete(dist3, list_, axis=0)
-                #dist3 = dist3/dist_cut # Do later on so I can use absoture number for the cut
+                dist3 = np.delete(dist3, list_, axis=0)
+                dist3 = dist3/dist_cut # Do later on so I can use absoture number for the cut
 
                 # Make the node type
                 nd_labels = tf.keras.utils.to_categorical(npSim[:,0], num_classes=24)
@@ -97,11 +93,14 @@ def parse_pdb(path, label, sample_fq=1):
                 #nd_labels = np.hstack((nd_labels, npSim[:,[0]]))
 
                 # Save the file
-                file_name = "/gpfs/alpine/stf011/world-shared/atsaris/datagnn/datagnn_ras_2020/KRAS_r0_full_new/%d_ras_%s.npz"%(cnt, label)
-                np.savez(file_name, edgelist=edge_np, distlist=distXYZ, nodefeat=nd_labels)
+                file_name = "/gpfs/alpine/stf011/world-shared/atsaris/toy-protmd_new/toy-protmd/graphs/%d_mdToy.npz"%(cnt)
+                np.savez(file_name, edgelist=edge_np, distlist=distXYZ, nodefeat=nd_labels, distlistE=dist3)
 
-            if line[0] == 'ENDMDL': 
+            if line[0] == 'Protein':
+                listSim = []
+                step = line[6]
                 cnt+=1
 
+                
 
-parse_pdb("/gpfs/alpine/stf011/world-shared/atsaris/toy-protmd_new/toy-protmd/tmp.gro", "on", sample_fq=10)
+parse_pdb("/gpfs/alpine/stf011/world-shared/atsaris/toy-protmd_new/toy-protmd/tmp.gro")
