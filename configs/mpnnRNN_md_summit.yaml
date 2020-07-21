@@ -1,12 +1,12 @@
 trainer: gnn
-output_dir: /gpfs/alpine/world-shared/stf011/atsaris/gnn_results_md_out/mpnn_bzrmd_sDev_new
+output_dir: /Users/28t/Downloads/tmp
 
 data:
     name: parse_mdRNN
     n_train: 1
     n_valid: 1
     ### input_dir: '/gpfs/alpine/stf011/world-shared/atsaris/datagnn/datagnn_ras_2020/graph_kRas_monomer_large'
-    filelist: '/ccs/proj/stf011/atsaris/may2020/gnn-protmd-RNN/gnn-protmd/filelist/tmp.csv'
+    filelist: 'filelist/tmp.csv'
     batch_size: 32
 
 model:
