@@ -23,7 +23,7 @@ num_list_on = np.sort(num_list_on)
 
 
 # First parse the name files
-path = "/gpfs/alpine/stf011/world-shared/atsaris/toy-protmd_new/toy-protmd/tmp.txt"
+path = "/gpfs/alpine/stf011/world-shared/atsaris/toy-protmd_new/toy-protmd/state.txt"
 lines = []
 with open(path, 'r') as f:
     line = f.readline()
