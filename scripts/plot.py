@@ -1,8 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-test = np.load('/gpfs/alpine/world-shared/stf011/atsaris/gnn_results_md_out/mpnn_bzrmd_sDev_KRAS_r0_sup.train/summaries_0.npz')
-print(test.files)
+test = np.load('/gpfs/alpine/world-shared/stf011/atsaris/gnn_results_md_out/mpnn_bzrmd_sDev_new/summaries_0.npz')
 
 # Loss
 plt.plot(test['train_loss'])

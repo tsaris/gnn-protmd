@@ -11,7 +11,7 @@ residues = ['1ALA', '2GLU', '3ASP', '4VAL', '5GLY', '6SER',
 
 dist_cut = 5
 
-def make_files(listSim, cnt):
+def make_files(listSim, cnt, output):
     npSim = np.asarray(listSim, dtype=np.float32)
 
     # Make all the combinations
@@ -61,17 +61,20 @@ def make_files(listSim, cnt):
     #nd_labels = np.hstack((nd_labels, npSim[:,[0]]))
     
     # Save the file
-    file_name = "/gpfs/alpine/stf011/world-shared/atsaris/toy-protmd_new/toy-protmd/graphs/%d_mdToy.npz"%(cnt)
+    file_name = "%s/%d_mdToy.npz"%(output, cnt)
     np.savez(file_name, edgelist=edge_np, distlist=distXYZ, nodefeat=nd_labels, distlistE=dist3)
 
 
 def parse_pdb(path):
 
+    filename = path + '/md.gro'
+    output = path + '/graphs/'
+
     listSim = []
     cnt = 0
 
     # Parse the pdb file
-    with open(path, 'r') as f:
+    with open(filename, 'r') as f:
         line = f.readline()
 
         tmp_line = line.split()
@@ -93,14 +96,54 @@ def parse_pdb(path):
                 listSim.append(pos)
 
             if line[0] == 'Protein' and int(line[6]) != step:
-                make_files(listSim, cnt)
+                make_files(listSim, cnt, output)
 
             if line[0] == 'Protein':
                 listSim = []
                 step = line[6]
                 cnt+=1
 
-    make_files(listSim, cnt)
+    make_files(listSim, cnt, output)
 
 
-parse_pdb("/gpfs/alpine/stf011/world-shared/atsaris/toy-protmd_new/toy-protmd/md.gro")
+
+parse_pdb("/gpfs/alpine/world-shared/stf011/atsaris/toy-protmd_new/run00/toy-protmd/")
+parse_pdb("/gpfs/alpine/world-shared/stf011/atsaris/toy-protmd_new/run01/toy-protmd/")
+parse_pdb("/gpfs/alpine/world-shared/stf011/atsaris/toy-protmd_new/run02/toy-protmd/")
+parse_pdb("/gpfs/alpine/world-shared/stf011/atsaris/toy-protmd_new/run03/toy-protmd/")
+parse_pdb("/gpfs/alpine/world-shared/stf011/atsaris/toy-protmd_new/run04/toy-protmd/")
+parse_pdb("/gpfs/alpine/world-shared/stf011/atsaris/toy-protmd_new/run05/toy-protmd/")
+parse_pdb("/gpfs/alpine/world-shared/stf011/atsaris/toy-protmd_new/run06/toy-protmd/")
+parse_pdb("/gpfs/alpine/world-shared/stf011/atsaris/toy-protmd_new/run07/toy-protmd/")
+parse_pdb("/gpfs/alpine/world-shared/stf011/atsaris/toy-protmd_new/run08/toy-protmd/")
+parse_pdb("/gpfs/alpine/world-shared/stf011/atsaris/toy-protmd_new/run09/toy-protmd/")
+parse_pdb("/gpfs/alpine/world-shared/stf011/atsaris/toy-protmd_new/run10/toy-protmd/")
+parse_pdb("/gpfs/alpine/world-shared/stf011/atsaris/toy-protmd_new/run11/toy-protmd/")
+parse_pdb("/gpfs/alpine/world-shared/stf011/atsaris/toy-protmd_new/run12/toy-protmd/")
+parse_pdb("/gpfs/alpine/world-shared/stf011/atsaris/toy-protmd_new/run13/toy-protmd/")
+parse_pdb("/gpfs/alpine/world-shared/stf011/atsaris/toy-protmd_new/run14/toy-protmd/")
+parse_pdb("/gpfs/alpine/world-shared/stf011/atsaris/toy-protmd_new/run15/toy-protmd/")
+parse_pdb("/gpfs/alpine/world-shared/stf011/atsaris/toy-protmd_new/run16/toy-protmd/")
+parse_pdb("/gpfs/alpine/world-shared/stf011/atsaris/toy-protmd_new/run17/toy-protmd/")
+parse_pdb("/gpfs/alpine/world-shared/stf011/atsaris/toy-protmd_new/run18/toy-protmd/")
+parse_pdb("/gpfs/alpine/world-shared/stf011/atsaris/toy-protmd_new/run19/toy-protmd/")
+parse_pdb("/gpfs/alpine/world-shared/stf011/atsaris/toy-protmd_new/run20/toy-protmd/")
+parse_pdb("/gpfs/alpine/world-shared/stf011/atsaris/toy-protmd_new/run21/toy-protmd/")
+parse_pdb("/gpfs/alpine/world-shared/stf011/atsaris/toy-protmd_new/run22/toy-protmd/")
+parse_pdb("/gpfs/alpine/world-shared/stf011/atsaris/toy-protmd_new/run23/toy-protmd/")
+parse_pdb("/gpfs/alpine/world-shared/stf011/atsaris/toy-protmd_new/run24/toy-protmd/")
+parse_pdb("/gpfs/alpine/world-shared/stf011/atsaris/toy-protmd_new/run25/toy-protmd/")
+parse_pdb("/gpfs/alpine/world-shared/stf011/atsaris/toy-protmd_new/run26/toy-protmd/")
+parse_pdb("/gpfs/alpine/world-shared/stf011/atsaris/toy-protmd_new/run27/toy-protmd/")
+parse_pdb("/gpfs/alpine/world-shared/stf011/atsaris/toy-protmd_new/run28/toy-protmd/")
+parse_pdb("/gpfs/alpine/world-shared/stf011/atsaris/toy-protmd_new/run29/toy-protmd/")
+parse_pdb("/gpfs/alpine/world-shared/stf011/atsaris/toy-protmd_new/run30/toy-protmd/")
+parse_pdb("/gpfs/alpine/world-shared/stf011/atsaris/toy-protmd_new/run31/toy-protmd/")
+parse_pdb("/gpfs/alpine/world-shared/stf011/atsaris/toy-protmd_new/run32/toy-protmd/")
+parse_pdb("/gpfs/alpine/world-shared/stf011/atsaris/toy-protmd_new/run33/toy-protmd/")
+parse_pdb("/gpfs/alpine/world-shared/stf011/atsaris/toy-protmd_new/run34/toy-protmd/")
+parse_pdb("/gpfs/alpine/world-shared/stf011/atsaris/toy-protmd_new/run35/toy-protmd/")
+parse_pdb("/gpfs/alpine/world-shared/stf011/atsaris/toy-protmd_new/run36/toy-protmd/")
+parse_pdb("/gpfs/alpine/world-shared/stf011/atsaris/toy-protmd_new/run37/toy-protmd/")
+parse_pdb("/gpfs/alpine/world-shared/stf011/atsaris/toy-protmd_new/run38/toy-protmd/")
+parse_pdb("/gpfs/alpine/world-shared/stf011/atsaris/toy-protmd_new/run39/toy-protmd/")
