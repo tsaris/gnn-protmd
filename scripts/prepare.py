@@ -94,12 +94,11 @@ def parse_pdb(path, label, sample_fq=1):
                 #nd_labels = np.hstack((nd_labels, npSim[:,[0]]))
 
                 # Save the file
-                file_name = "/gpfs/alpine/stf011/world-shared/atsaris/datagnn/datagnn_ras_2020/KRAS_r0_full_new/%d_ras_%s.npz"%(cnt, label)
+                file_name = "/gpfs/alpine/world-shared/stf011/atsaris/datagnn/datagnn_ras_2020/pdb_cnn/graphs/%d_ras_%s.npz"%(cnt, label)
                 np.savez(file_name, edgelist=edge_np, distlist=distXYZ, nodefeat=nd_labels)
 
             if line[0] == 'ENDMDL': 
                 cnt+=1
 
 
-parse_pdb("/gpfs/alpine/stf011/world-shared/atsaris/datagnn/datagnn_ras_2020/pdb_cnn/ras_rn0_on.pdb", "on", sample_fq=10)
-parse_pdb("/gpfs/alpine/stf011/world-shared/atsaris/datagnn/datagnn_ras_2020/pdb_cnn/ras_rn0_off.pdb", "off", sample_fq=10)
+parse_pdb("/gpfs/alpine/world-shared/stf011/atsaris/datagnn/datagnn_ras_2020/pdb_cnn/tmp.pdb", "on", sample_fq=10)
