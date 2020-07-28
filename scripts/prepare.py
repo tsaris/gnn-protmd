@@ -4,6 +4,7 @@ from scipy.stats import percentileofscore as perc
 from scipy.spatial.distance import pdist
 from itertools import combinations
 import tensorflow as tf
+from sklearn.preprocessing import MinMaxScaler, StandardScaler
 
 residues = ['ALA', 'ARG', 'ASN', 'ASP', 'ASX', 'CYS', 'GLN',
             'GLU', 'GLX', 'GLY', 'HIS', 'ILE', 'LEU', 'LYS',
@@ -35,39 +36,31 @@ def parse_pdb(path, label, sample_fq=1):
                 tmp = []
                 res = residues.index(line[3])
                 tmp.append(str(res))
-                pos = line[5:8]
+                pos = line[6:9]
                 pos = tmp + pos
                 listSim.append(pos)
 
             if line[0] == 'ENDMDL' and (cnt%sample_fq) == 0:
                 npSim = np.asarray(listSim, dtype=np.float32)
-                #cent = np.mean(npSim[:,1:4], axis=0)
-                #res_depth = np.array([euclidean(cent, c) for c in npSim[:,1:4]])
-                #res_depth_perc = [1- perc(res_depth, d)/100.0 for d in res_depth]
-                #res_depth_perc = np.array(res_depth_perc, dtype=np.float32)
-                #npSim = np.hstack((res_depth_perc.reshape(res_depth_perc.shape[0],1), npSim))
 
                 # Make all the combinations
                 edge_np = combinations(np.arange(npSim.shape[0]), 2)
                 edge_np = np.array(list(edge_np))
                 edge_np_f = np.flip(edge_np)
                 edge_np = np.concatenate((edge_np, edge_np_f[::-1]), axis=0)
-                
+
                 # Edge features
                 distX = np.array(pdist(npSim[:,[1]].astype('float')))
                 distX2 = np.concatenate((distX, distX), axis=0)
                 distX3 = distX2.reshape(distX2.shape[0], 1)
-                distX3 = distX3/dist_cut
 
                 distY = np.array(pdist(npSim[:,[2]].astype('float')))
                 distY2 = np.concatenate((distY, distY), axis=0)
                 distY3 = distY2.reshape(distY2.shape[0], 1)
-                distY3 = distY3/dist_cut
 
                 distZ = np.array(pdist(npSim[:,[3]].astype('float')))
                 distZ2 = np.concatenate((distZ, distZ), axis=0)
                 distZ3 = distZ2.reshape(distZ2.shape[0], 1)
-                distZ3 = distZ3/dist_cut
 
                 # Euclidean Distance
                 dist = np.array(pdist(npSim[:,-3:].astype('float')))
@@ -79,23 +72,27 @@ def parse_pdb(path, label, sample_fq=1):
                 for i in range(0, len(dist3)):
                     if (dist3[i]>dist_cut): list_.append(i)
                 edge_np = np.delete(edge_np, list_, axis=0)
-                distX3 = np.delete(dist3, list_, axis=0)
-                distY3 = np.delete(dist3, list_, axis=0)
-                distZ3 = np.delete(dist3, list_, axis=0)
+                dist3 = np.delete(dist3, list_, axis=0)
+                distX3 = np.delete(distX3, list_, axis=0)
+                distY3 = np.delete(distY3, list_, axis=0)
+                distZ3 = np.delete(distZ3, list_, axis=0)
                 distXYZ = np.hstack((distX3, distY3, distZ3))
 
-                # I don't really need to do this, the Euclidean Distance doesn't saved
-                #dist3 = np.delete(dist3, list_, axis=0)
-                #dist3 = dist3/dist_cut # Do later on so I can use absoture number for the cut
+                # Another normilization
+                dist3C = dist3/dist_cut # Do later on so I can use absoture number for the cut
+
+                # Normalization
+                scaler = MinMaxScaler()
+                distXYZ = scaler.fit_transform(distXYZ)
+                scaler = MinMaxScaler()
+                dist3 = scaler.fit_transform(dist3)
 
                 # Make the node type
                 nd_labels = tf.keras.utils.to_categorical(npSim[:,0], num_classes=24)
-                # Add node feature of relative position
-                #nd_labels = np.hstack((nd_labels, npSim[:,[0]]))
 
                 # Save the file
                 file_name = "/gpfs/alpine/world-shared/stf011/atsaris/datagnn/datagnn_ras_2020/pdb_cnn/graphs/%d_ras_%s.npz"%(cnt, label)
-                np.savez(file_name, edgelist=edge_np, distlist=distXYZ, nodefeat=nd_labels)
+                np.savez(file_name, edgelist=edge_np, nodefeat=nd_labels, distlist=distXYZ, dist3list=dist3, dist3Clist=dist3C)
 
             if line[0] == 'ENDMDL': 
                 cnt+=1
