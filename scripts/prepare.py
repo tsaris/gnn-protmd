@@ -5,13 +5,10 @@ from scipy.spatial.distance import pdist
 from itertools import combinations
 import tensorflow as tf
 
-#residues = ['ALA', 'ARG', 'ASN', 'ASP', 'ASX', 'CYS', 'GLN',
-#            'GLU', 'GLX', 'GLY', 'HIS', 'ILE', 'LEU', 'LYS',
-#            'MET', 'PHE', 'PRO', 'SER', 'THR', 'TRP', 'TYR',
-#            'UNK', 'VAL', 'HSD']
-
-residues = ['1ALA', '2GLU', '3ASP', '4VAL', '5GLY', '6SER', 
-            '7ASN', '8LYSH', '9GLY', '10ALA']
+residues = ['ALA', 'ARG', 'ASN', 'ASP', 'ASX', 'CYS', 'GLN',
+            'GLU', 'GLX', 'GLY', 'HIS', 'ILE', 'LEU', 'LYS',
+            'MET', 'PHE', 'PRO', 'SER', 'THR', 'TRP', 'TYR',
+            'UNK', 'VAL', 'HSD']
 
 dist_cut = 5
 
@@ -104,4 +101,5 @@ def parse_pdb(path, label, sample_fq=1):
                 cnt+=1
 
 
-parse_pdb("/gpfs/alpine/stf011/world-shared/atsaris/toy-protmd_new/toy-protmd/tmp.gro", "on", sample_fq=10)
+parse_pdb("/gpfs/alpine/stf011/world-shared/atsaris/datagnn/datagnn_ras_2020/pdb_cnn/ras_rn0_on.pdb", "on", sample_fq=10)
+parse_pdb("/gpfs/alpine/stf011/world-shared/atsaris/datagnn/datagnn_ras_2020/pdb_cnn/ras_rn0_off.pdb", "off", sample_fq=10)
