@@ -91,11 +91,11 @@ def parse_pdb(path, label, sample_fq=1):
                 nd_labels = tf.keras.utils.to_categorical(npSim[:,0], num_classes=24)
 
                 # Save the file
-                file_name = "/gpfs/alpine/stf011/world-shared/atsaris/datagnn/datagnn_ras_2020/KRAS_r0/%d_ras_%s.npz"%(cnt, label)
+                file_name = "/gpfs/alpine/stf011/world-shared/atsaris/datagnn/datagnn_ras_2020/KRAS_r0_all/%d_ras_%s.npz"%(cnt, label)
                 np.savez(file_name, edgelist=edge_np, nodefeat=nd_labels, distlist=distXYZ, dist3list=dist3, dist3Clist=dist3C)
 
             if line[0] == 'ENDMDL': 
                 cnt+=1
 
-parse_pdb("/gpfs/alpine/world-shared/bif128/for_Aris/new_07_08_2020/non_superimposed/KRAS_GDP/KRAS_GDP_r0_protein_nonsuperimposed.pdb", "on", sample_fq=10)
-parse_pdb("/gpfs/alpine/world-shared/bif128/for_Aris/new_07_08_2020/non_superimposed/KRAS_GTP/KRAS_GTP_r0_protein_nonsuperimposed.pdb", "off", sample_fq=10)
+parse_pdb("/gpfs/alpine/world-shared/bif128/for_Aris/new_07_08_2020/non_superimposed/KRAS_GDP/KRAS_GDP_r0_protein_nonsuperimposed.pdb", "on", sample_fq=1)
+parse_pdb("/gpfs/alpine/world-shared/bif128/for_Aris/new_07_08_2020/non_superimposed/KRAS_GTP/KRAS_GTP_r0_protein_nonsuperimposed.pdb", "off", sample_fq=1)

@@ -24,13 +24,28 @@ def init_workers_gloo_file():
 
 def init_workers_nccl_file():
     """Initialize workers with NCCL backend and sync file"""
-    rank = int(os.environ['SLURM_PROCID'])
-    n_ranks = int(os.environ['SLURM_NTASKS'])
-    sync_file = _get_sync_file()
-    print('Setting up with sync file', sync_file)
-    dist.init_process_group(backend='nccl', world_size=n_ranks, rank=rank,
-                            init_method=sync_file)
-    return rank, n_ranks
+    #rank = int(os.environ['SLURM_PROCID'])
+    #n_ranks = int(os.environ['SLURM_NTASKS'])
+    #sync_file = _get_sync_file()
+    #print('Setting up with sync file', sync_file)
+    #dist.init_process_group(backend='nccl', world_size=n_ranks, rank=rank,
+    #                        init_method=sync_file)
+    #return rank, n_ranks
+
+    world_size = int(os.environ['OMPI_COMM_WORLD_SIZE']) # hvd.size()
+    world_rank = int(os.environ['OMPI_COMM_WORLD_RANK']) # hvd.rank()
+    local_rank = int(os.environ['OMPI_COMM_WORLD_LOCAL_RANK']) # hvd.local_rank()
+
+    import subprocess
+    get_master = "echo $(cat {} | sort | uniq | grep -v batch | grep -v login | head -1)".format(os.environ['LSB_DJOB_HOSTFILE'])
+    os.environ['MASTER_ADDR'] = str(subprocess.check_output(get_master, shell=True))[2:-3]
+    os.environ['MASTER_PORT'] = "23456"
+    os.environ['WORLD_SIZE'] = os.environ['OMPI_COMM_WORLD_SIZE']
+    os.environ['RANK'] = os.environ['OMPI_COMM_WORLD_RANK']
+    dist.init_process_group('nccl',
+                            rank=world_rank, world_size=world_size)
+
+    return world_rank, world_size
 
 def init_workers_mpi():
     """Initialize workers with MPI backend"""

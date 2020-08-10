@@ -11,12 +11,15 @@ residues = ['ALA', 'ARG', 'ASN', 'ASP', 'ASX', 'CYS', 'GLN',
             'MET', 'PHE', 'PRO', 'SER', 'THR', 'TRP', 'TYR',
             'UNK', 'VAL', 'HSD']
 
-dist_cut = 5
+
 
 def parse_pdb(path):
 
     listSim = []
     listSimAll = []
+    listSim_loc = []
+    listSim_vel = []
+
     cnt = 0
 
     # Parse the pdb file
@@ -45,23 +48,21 @@ def parse_pdb(path):
                 listSimAll.append(listSim)
                 npSim = np.asarray(listSimAll, dtype=np.float32)
                 npSim = npSim[:,:,-3:]
-                #npSim = npSim.reshape(npSim.shape[0], npSim.shape[2], npSim.shape[1])
 
                 if cnt!=0:
 
-                    print(npSim[cnt])
-                    print(npSim[cnt-1])
-
                     loc = npSim[cnt-1]
                     vel = npSim[cnt-1] - npSim[cnt]
-                    print(tmp)
 
-                    scaler = MinMaxScaler()
-                    distXYZ = scaler.fit_transform(distXYZ)
-                    
-                    #print(npSim)
-                    exit(-1)
-            
+                    scaler = MinMaxScaler(feature_range=(-1,1))
+                    loc = scaler.fit_transform(loc)
+                    loc = loc.reshape(loc.shape[1], loc.shape[0])
+                    listSim_loc.append(loc)
+
+                    scaler = MinMaxScaler(feature_range=(-1,1))
+                    vel = scaler.fit_transform(vel)
+                    vel = vel.reshape(vel.shape[1], vel.shape[0])
+                    listSim_vel.append(vel)
                 
                 # Save the file
                 #file_name = "/gpfs/alpine/world-shared/stf011/atsaris/datagnn/datagnn_ras_2020/pdb_test/graphs/%d_ras_%s.npz"%(cnt, label)
@@ -70,4 +71,20 @@ def parse_pdb(path):
             if line[0] == 'ENDMDL': 
                 cnt+=1
 
-parse_pdb("/gpfs/alpine/world-shared/stf011/atsaris/datagnn/datagnn_ras_2020/pdb_test/tmp.pdb")
+    listSim_loc = np.asarray(listSim_loc)
+    listSim_vel = np.asarray(listSim_vel)
+    return listSim_loc, listSim_vel
+
+
+loc_0, vel_0 = parse_pdb("/gpfs/alpine/world-shared/stf011/atsaris/datagnn/datagnn_ras_2020/pdb_test/tmp.pdb")
+loc_1, vel_1 = parse_pdb("/gpfs/alpine/world-shared/stf011/atsaris/datagnn/datagnn_ras_2020/pdb_test/tmp.pdb")
+loc_2, vel_2 = parse_pdb("/gpfs/alpine/world-shared/stf011/atsaris/datagnn/datagnn_ras_2020/pdb_test/tmp.pdb")
+
+loc_0 = loc_0.reshape(1, loc_0.shape[0], loc_0.shape[1], loc_0.shape[2])
+loc_1 = loc_1.reshape(1, loc_1.shape[0], loc_1.shape[1], loc_1.shape[2])
+loc_2 = loc_2.reshape(1, loc_2.shape[0], loc_2.shape[1], loc_2.shape[2])
+
+loc = np.vstack((loc_0, loc_1, loc_2))
+
+file_name = "/gpfs/alpine/world-shared/stf011/atsaris/datagnn/datagnn_ras_2020/pdb_test/graphs/ras.npy"
+np.save(file_name, loc)

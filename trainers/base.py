@@ -14,6 +14,8 @@ import torch
 # Locals
 from models import get_model
 
+from torch.nn.parallel import DistributedDataParallel
+
 class BaseTrainer(object):
     """Base class for PyTorch trainers.
 
@@ -110,7 +112,7 @@ class BaseTrainer(object):
 
         checkpoint_dir = os.path.join(self.output_dir, 'checkpoints')
         checkpoint_file = os.path.join(
-            checkpoint_dir, 'model_checkpoint_099.pth.tar')
+            checkpoint_dir, 'model_checkpoint_039.pth.tar')
         checkpoint = torch.load(checkpoint_file, map_location=self.device)
         self.model.load_state_dict(checkpoint['model'])
         self.optimizer.load_state_dict(checkpoint['optimizer'])
