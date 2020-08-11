@@ -48,8 +48,8 @@ class MDGraphDataset(Dataset):
         else:
             raise Exception('Must provide either input_dir or filelist to HitGraphDataset')
 
-        #random.shuffle(filenames)
-        #random.shuffle(filenames)
+        random.shuffle(filenames)
+        random.shuffle(filenames)
         self.filenames = filenames if n_samples is None else filenames[:n_samples]
         
     def __getitem__(self, index):

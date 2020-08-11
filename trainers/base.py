@@ -33,8 +33,11 @@ class BaseTrainer(object):
         
         if gpu is not None:
             print("Using GPU")
-            self.device = torch.device('cuda', gpu)
-            torch.cuda.set_device(gpu)
+            #self.device = torch.device('cuda', gpu)
+            #torch.cuda.set_device(gpu)
+            local_rank = int(os.environ['OMPI_COMM_WORLD_LOCAL_RANK']) # hvd.local_rank()
+            self.device = 'cuda:%i' % local_rank
+            torch.cuda.set_device(self.device)
         else:
             print("Using CPU")
             self.device = torch.device('cpu')
@@ -96,7 +99,9 @@ class BaseTrainer(object):
         # TODO: needs update
         assert self.output_dir is not None
 
-        model_state_dict = (self.model.state_dict())
+        model_state_dict = (self.model.module.state_dict()
+                            if self.distributed
+                            else self.model.state_dict())
         checkpoint = dict(checkpoint_id=checkpoint_id,
                           model=model_state_dict,
                           optimizer=self.optimizer.state_dict())
@@ -112,7 +117,7 @@ class BaseTrainer(object):
 
         checkpoint_dir = os.path.join(self.output_dir, 'checkpoints')
         checkpoint_file = os.path.join(
-            checkpoint_dir, 'model_checkpoint_039.pth.tar')
+            checkpoint_dir, 'model_checkpoint_030.pth.tar')
         checkpoint = torch.load(checkpoint_file, map_location=self.device)
         self.model.load_state_dict(checkpoint['model'])
         self.optimizer.load_state_dict(checkpoint['optimizer'])
