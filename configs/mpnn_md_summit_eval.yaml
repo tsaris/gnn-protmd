@@ -5,7 +5,7 @@ data:
     name: parse_md
     n_train: 1
     n_valid: 1
-    filelist: '/ccs/proj/stf011/atsaris/august2020/gnn-protmd/filelists/KRAS_g12C_r8.csv'
+    filelist: '/ccs/proj/stf011/atsaris/august2020/gnn-protmd/filelists/KRAS_g12D_r0_chain2_25.csv'
     batch_size: 32
 
 model:
