@@ -1,7 +1,7 @@
 import os, re
 import numpy as np
 
-input_dir = '/gpfs/alpine/world-shared/stf011/atsaris/datagnn/datagnn_ras_August2020/KRAS_g12D_r0_chain2_25'
+input_dir = '/gpfs/alpine/world-shared/stf011/atsaris/datagnn/temporal/tmp/graphs'
 cnt = 0
 freq = 1
 

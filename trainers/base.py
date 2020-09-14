@@ -4,6 +4,7 @@ Common PyTorch trainer code.
 
 # System
 import os
+from os import environ
 import time
 import logging
 
@@ -33,11 +34,13 @@ class BaseTrainer(object):
         
         if gpu is not None:
             print("Using GPU")
-            #self.device = torch.device('cuda', gpu)
-            #torch.cuda.set_device(gpu)
-            local_rank = int(os.environ['OMPI_COMM_WORLD_LOCAL_RANK']) # hvd.local_rank()
-            self.device = 'cuda:%i' % local_rank
-            torch.cuda.set_device(self.device)
+            if environ.get('OMPI_COMM_WORLD_LOCAL_RANK') is not None:
+                local_rank = int(os.environ['OMPI_COMM_WORLD_LOCAL_RANK']) # hvd.local_rank()
+                self.device = 'cuda:%i' % local_rank
+                torch.cuda.set_device(self.device)
+            else:
+                self.device = torch.device('cuda', gpu)
+                torch.cuda.set_device(gpu)
         else:
             print("Using CPU")
             self.device = torch.device('cpu')
@@ -60,6 +63,7 @@ class BaseTrainer(object):
         if self.distributed:
             device_ids = [self.gpu] if self.gpu is not None else None
             self.model = DistributedDataParallel(self.model, device_ids=device_ids)
+
 
         # Construct the optimizer
         if (model_args['name'] == 'mpnn5'):

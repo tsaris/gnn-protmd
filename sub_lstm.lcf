@@ -15,5 +15,5 @@ nnodes=$(cat ${LSB_DJOB_HOSTFILE} | sort | uniq | grep -v login | grep -v batch 
 export PATH=/gpfs/alpine/proj-shared/stf011/atsaris/summit_envs/ibm_clone_torchgeo_env_new_sumDev_new/conda_env/bin/:$PATH 
 export LD_LIBRARY_PATH=/gpfs/alpine/proj-shared/stf011/atsaris/summit_envs/ibm_clone_torchgeo_env_new_sumDev_new/conda_env/bin/:$LD_LIBRARY_PATH
 
-jsrun -n${nnodes} -a1 -c20 -g1 -r1 python train.py --rank-gpu configs/mpnn_md_summit.yaml
+jsrun -n${nnodes} -a1 -c20 -g1 -r1 python train.py --rank-gpu configs/mpnn_md_summit_lstm.yaml
 #jsrun -n${nnodes} -a1 -c20 -g1 -r1 python train.py --rank-gpu configs/mpnnGCN_md_summit.yaml

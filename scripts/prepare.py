@@ -13,10 +13,11 @@ residues = ['ALA', 'ARG', 'ASN', 'ASP', 'ASX', 'CYS', 'GLN',
 
 dist_cut = 5
 
-def parse_pdb(path, label, sample_fq=1):
+def parse_pdb(path, label, sample_fq=1, temporal_fq=1):
 
     listSim = []
     cnt = 0
+    edge_np_lst, nd_labels_lst, distXYZ_lst, dist3_lst, dist3C_lst = [], [], [], [], []
 
     # Parse the pdb file
     with open(path, 'r') as f:
@@ -91,11 +92,21 @@ def parse_pdb(path, label, sample_fq=1):
                 nd_labels = tf.keras.utils.to_categorical(npSim[:,0], num_classes=24)
 
                 # Save the file
-                file_name = "/gpfs/alpine/stf011/world-shared/atsaris/datagnn/datagnn_ras_2020/KRAS_r0_all/%d_ras_%s.npz"%(cnt, label)
-                np.savez(file_name, edgelist=edge_np, nodefeat=nd_labels, distlist=distXYZ, dist3list=dist3, dist3Clist=dist3C)
+                if (cnt!=0):
+                    edge_np_lst.append(edge_np)
+                    nd_labels_lst.append(nd_labels)
+                    distXYZ_lst.append(distXYZ)
+                    dist3_lst.append(dist3)
+                    dist3C_lst.append(dist3C)
+
+                if (cnt%temporal_fq==0 and cnt!=0):
+                    file_name = "/gpfs/alpine/world-shared/stf011/atsaris/datagnn/temporal/tmp/graphs/%d_ras_%s.npz"%(cnt, label)
+                    np.savez(file_name, edgelist=np.asarray(edge_np_lst), nodefeat=np.asarray(nd_labels_lst), 
+                             distlist=np.asarray(distXYZ_lst), dist3list=np.asarray(dist3_lst), dist3Clist=np.asarray(dist3C_lst))
+                    edge_np_lst, nd_labels_lst, distXYZ_lst, dist3_lst, dist3C_lst = [], [], [], [], []
 
             if line[0] == 'ENDMDL': 
                 cnt+=1
 
-parse_pdb("/gpfs/alpine/world-shared/bif128/for_Aris/new_07_08_2020/non_superimposed/KRAS_GDP/KRAS_GDP_r0_protein_nonsuperimposed.pdb", "on", sample_fq=1)
-parse_pdb("/gpfs/alpine/world-shared/bif128/for_Aris/new_07_08_2020/non_superimposed/KRAS_GTP/KRAS_GTP_r0_protein_nonsuperimposed.pdb", "off", sample_fq=1)
+parse_pdb("/gpfs/alpine/world-shared/stf011/atsaris/datagnn/temporal/tmp/tmp.ON.pdb", "on", sample_fq=1, temporal_fq=10)
+parse_pdb("/gpfs/alpine/world-shared/stf011/atsaris/datagnn/temporal/tmp/tmp.OFF.pdb", "off", sample_fq=1, temporal_fq=10)

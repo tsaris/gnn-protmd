@@ -23,7 +23,8 @@ class GNNTrainer(BaseTrainer):
 
         # Loop over training batches
         for i, batch in enumerate(data_loader):
-            batch = batch.to(self.device)
+            #batch = batch.to(self.device)
+            batch = [_batch.to(self.device) for _batch in batch]
             self.model.zero_grad()
             batch_output = self.model(batch)
 
@@ -34,7 +35,7 @@ class GNNTrainer(BaseTrainer):
             #print("2 Vs edges:", batch.edge_index.shape)
             #print("edges Vs edge features", batch.edge_attr.shape)
 
-            batch_target = batch.y.float()
+            batch_target = batch[0].y.float()
             batch_loss = self.loss_func(batch_output, batch_target)
             batch_loss.backward()
             self.optimizer.step()
@@ -60,10 +61,11 @@ class GNNTrainer(BaseTrainer):
 
         # Loop over batches
         for i, batch in enumerate(data_loader):
-            batch = batch.to(self.device)
+            #batch = batch.to(self.device)
+            batch = [_batch.to(self.device) for _batch in batch]
             batch_output = self.model(batch)
             # FIXME: converting labels to float for binary loss with TUDataset
-            batch_target = batch.y.float()
+            batch_target = batch[0].y.float()
             loss = self.loss_func(batch_output, batch_target)
             sum_loss += loss.item()
 

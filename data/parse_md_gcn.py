@@ -16,22 +16,25 @@ from scipy.ndimage import gaussian_filter1d
 def load_graph(filename):
     """Load one graph from an npz file"""
 
-    with np.load(filename) as npzfile:
+    with np.load(filename, allow_pickle=True) as npzfile:
         edge_np = npzfile['edgelist']
-        dist3 = npzfile['distlist']
+        dist3 = npzfile['dist3Clist']
         nd_labels = npzfile['nodefeat']
 
-    dist3 = gaussian_filter1d(dist3.reshape(dist3.shape[0]), 0.5)
+    list_data = []
 
-    edge_index = torch.tensor(edge_np, dtype=torch.long)
-    edge_attr = torch.tensor(dist3, dtype=torch.float)
-    x = torch.tensor(nd_labels, dtype=torch.float)
-    
-    # Make the labels
-    if filename.endswith('off.npz'): y = torch.tensor([0], dtype=torch.int)
-    if filename.endswith('on.npz'): y = torch.tensor([1], dtype=torch.int)
+    for i in range(0, edge_np.shape[0]):
+        dist3_tmp = dist3[i]
+        dist3_tmp = gaussian_filter1d(dist3_tmp.reshape(dist3_tmp.shape[0]), 0.5)
+        edge_index = torch.tensor(edge_np[i], dtype=torch.long)
+        edge_attr = torch.tensor(dist3_tmp, dtype=torch.float)
+        x = torch.tensor(nd_labels[i], dtype=torch.float)
+        # Make the labels
+        if filename.endswith('off.npz'): y = torch.tensor([0], dtype=torch.int)
+        if filename.endswith('on.npz'): y = torch.tensor([1], dtype=torch.int)
+        list_data.append(Data(x=x, edge_index=edge_index.t().contiguous(), y=y, edge_attr=edge_attr))
 
-    return Data(x=x, edge_index=edge_index.t().contiguous(), y=y, edge_attr=edge_attr)
+    return list_data
 
 class MDGraphDataset(Dataset):
     """PyTorch dataset specification for MD protein graphs"""
@@ -50,8 +53,6 @@ class MDGraphDataset(Dataset):
         else:
             raise Exception('Must provide either input_dir or filelist to HitGraphDataset')
 
-        #random.shuffle(filenames)
-        #random.shuffle(filenames)
         self.filenames = filenames if n_samples is None else filenames[:n_samples]
         
     def __getitem__(self, index):
