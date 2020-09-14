@@ -9,6 +9,8 @@
 #BSUB -N
 # End LSF directives and begin shell commands
 
+#test
+
 nnodes=$(cat ${LSB_DJOB_HOSTFILE} | sort | uniq | grep -v login | grep -v batch | wc -l)
 
 # SummitDev
