@@ -19,8 +19,9 @@ from utils.logging import config_logging
 from utils.distributed import init_workers
 
 import torch
-from data.parse_md import MDGraphDataset
-from torch.utils.data import Subset, DataLoader
+from data.parse_md_gcn import MDGraphDataset
+#from torch.utils.data import Subset, DataLoader
+from torch_geometric.data import DataLoader
 from torch_geometric.data import Batch
 
 
@@ -55,8 +56,8 @@ def get_dataset(config):
 def get_test_data_loader(config, batch_size=1):
     # Take the test set from the back
     full_dataset = get_dataset(config)
-    return DataLoader(full_dataset, batch_size=batch_size,
-                      collate_fn=Batch.from_data_list)
+    return DataLoader(full_dataset, batch_size=batch_size)
+                      #,collate_fn=Batch.from_data_list)
 
 
 def main():
@@ -64,6 +65,7 @@ def main():
 
     # Initialization
     args = parse_args()
+    rank, n_ranks = init_workers(args.distributed_backend)
 
     # Load configuration
     config = load_config(args.config)
@@ -75,7 +77,9 @@ def main():
         os.makedirs(output_dir, exist_ok=True)
 
     # Load the trainer
-    trainer = get_trainer(name=config['trainer'], output_dir=output_dir)
+    gpu = (rank % args.ranks_per_node) if args.rank_gpu else args.gpu
+    trainer = get_trainer(name=config['trainer'],
+                          rank=rank, output_dir=output_dir, gpu=gpu)
 
     # Build the model
     model_config = config.get('model', {})

@@ -1,0 +1,24 @@
+trainer: gnn
+output_dir: /gpfs/alpine/world-shared/stf011/atsaris/gnn_results_md_out/temporal
+
+data:
+    name: parse_md_gcn
+    n_train: 1
+    n_valid: 1
+    filelist: '/ccs/proj/stf011/atsaris/august2020/gnn_new/gnn-protmd/filelist/KRAS_r9.csv'
+    batch_size: 32
+
+model:
+    name: mpnn6
+    n_node_features: 24
+    n_edge_features: 1
+    hidden_size: 16
+    n_outputs: 1
+    loss_function: binary_cross_entropy_with_logits
+
+optimizer:
+    name: Adam
+    lr: 0.001
+
+training:
+    n_epochs: 1

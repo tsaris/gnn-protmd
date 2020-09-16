@@ -108,5 +108,5 @@ def parse_pdb(path, label, sample_fq=1, temporal_fq=1):
             if line[0] == 'ENDMDL': 
                 cnt+=1
 
-parse_pdb("/gpfs/alpine/world-shared/stf011/atsaris/datagnn/temporal/tmp/tmp.ON.pdb", "on", sample_fq=1, temporal_fq=10)
-parse_pdb("/gpfs/alpine/world-shared/stf011/atsaris/datagnn/temporal/tmp/tmp.OFF.pdb", "off", sample_fq=1, temporal_fq=10)
+parse_pdb("/gpfs/alpine/world-shared/stf011/atsaris/datagnn/temporal/tmp/tmp.ON.pdb", "on", sample_fq=1, temporal_fq=350)
+parse_pdb("/gpfs/alpine/world-shared/stf011/atsaris/datagnn/temporal/tmp/tmp.OFF.pdb", "off", sample_fq=1, temporal_fq=350)

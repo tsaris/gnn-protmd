@@ -96,9 +96,11 @@ class GNNTrainer(BaseTrainer):
     @torch.no_grad()
     def predict(self, data_loader):
         sum_correct = 0
-        for batch in data_loader:
+        #for batch in data_loader:
+        for i, batch in enumerate(data_loader):
+            batch = [_batch.to(self.device) for _batch in batch]
             batch_output = self.model(batch)
-            batch_target = batch.y.float()
+            batch_target = batch[0].y.float()
             batch_pred = batch_output > 0
             batch_label = batch_target > 0.5
             n_correct = (batch_pred == batch_label).sum().item()
