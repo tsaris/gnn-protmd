@@ -1,7 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-test = np.load('/gpfs/alpine/world-shared/stf011/atsaris/gnn_results_md_out/mpnn_bzrmd_sDev_new/summaries_0.npz')
+test = np.load('/gpfs/alpine/world-shared/stf011/atsaris/gnn_results_md_out/G12D_r0_ch2_temporal/summaries_0.npz')
 print(test.files)
 
 # Loss

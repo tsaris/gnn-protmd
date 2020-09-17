@@ -1,7 +1,7 @@
 import os, re
 import numpy as np
 
-input_dir = '/gpfs/alpine/world-shared/stf011/atsaris/datagnn/temporal/G12D_r0_ch2'
+input_dir = '/gpfs/alpine/world-shared/stf011/atsaris/datagnn/temporal_new/G12D_r9_ch2'
 cnt = 0
 freq = 1
 
@@ -32,7 +32,7 @@ num_list_off = np.array(num_list_off)
 num_list_on = np.sort(num_list_on)
 num_list_off = np.sort(num_list_off)
 
-for i in range(0, num_list_on.shape[0]):
+for i in range(0, num_list_off.shape[0]):
     if (cnt%freq) == 0:
         print('%s/%d_ras_on.npz'%(input_dir, num_list_on[i]))
         print('%s/%d_ras_off.npz'%(input_dir, num_list_off[i]))
