@@ -13,7 +13,7 @@ dist_cut = 5
 edge_np_lst_on, nd_labels_lst_on, distXYZ_lst_on, dist3_lst_on, dist3C_lst_on = [], [], [], [], []
 edge_np_lst_off, nd_labels_lst_off, distXYZ_lst_off, dist3_lst_off, dist3C_lst_off = [], [], [], [], []
 
-def make_files(listSim, cnt, cnt_on, cnt_off, temporal_fq, label):
+def make_files(path_dir, listSim, cnt, cnt_on, cnt_off, temporal_fq, label):
     npSim = np.asarray(listSim, dtype=np.float32)
 
     # Make all the combinations
@@ -83,7 +83,7 @@ def make_files(listSim, cnt, cnt_on, cnt_off, temporal_fq, label):
         dist3C_lst_off.append(dist3C)
 
     if (cnt_on%temporal_fq==0 and cnt_on!=0 and label=='on'):
-        file_name = "/gpfs/alpine/proj-shared/stf011/atsaris/results/toy-protmd/WT_graphs/%d_ras_%s.npz"%(cnt, label)
+        file_name = "%s/%d_ras_%s.npz"%(path_dir, cnt, label)
         np.savez(file_name, edgelist=np.asarray(edge_np_lst_on), 
                  nodefeat=np.asarray(nd_labels_lst_on), 
                  distlist=np.asarray(distXYZ_lst_on), 
@@ -92,7 +92,7 @@ def make_files(listSim, cnt, cnt_on, cnt_off, temporal_fq, label):
         edge_np_lst_on, nd_labels_lst_on, distXYZ_lst_on, dist3_lst_on, dist3C_lst_on = [], [], [], [], []
 
     if (cnt_off%temporal_fq==0 and cnt_off!=0 and label=='off'):
-        file_name = "/gpfs/alpine/proj-shared/stf011/atsaris/results/toy-protmd/WT_graphs/%d_ras_%s.npz"%(cnt, label)
+        file_name = "%s/%d_ras_%s.npz"%(path_dir, cnt, label)
         np.savez(file_name, edgelist=np.asarray(edge_np_lst_off), 
                  nodefeat=np.asarray(nd_labels_lst_off), 
                  distlist=np.asarray(distXYZ_lst_off), 
@@ -102,10 +102,9 @@ def make_files(listSim, cnt, cnt_on, cnt_off, temporal_fq, label):
 
 
 
-def parse_pdb(path, temporal_fq):
+def parse_pdb(pdb_file, label_file, path_dir, temporal_fq):
 
-    filename = path + '/md_small.gro'
-    f = open(path + '/state_small.txt', "r")
+    f = open(label_file, "r")
     labels = f.readlines()
 
     listSim = []
@@ -114,7 +113,7 @@ def parse_pdb(path, temporal_fq):
     cnt = 0
 
     # Parse the pdb file
-    with open(filename, 'r') as f:
+    with open(pdb_file, 'r') as f:
         line = f.readline()
 
         tmp_line = line.split()
@@ -138,7 +137,7 @@ def parse_pdb(path, temporal_fq):
             if line[0] == 'Protein' and int(line[6]) != step:
                 if(labels[cnt].split()[1] == "Turn"): label = 'on'
                 else: label = 'off'
-                make_files(listSim, cnt, cnt_on, cnt_off, temporal_fq, label)
+                make_files(path_dir, listSim, cnt, cnt_on, cnt_off, temporal_fq, label)
 
             if line[0] == 'Protein':
                 listSim = []
@@ -151,4 +150,7 @@ def parse_pdb(path, temporal_fq):
 
 
 
-parse_pdb("/gpfs/alpine/proj-shared/stf011/atsaris/results/toy-protmd/WT/", temporal_fq=5)
+parse_pdb("/gpfs/alpine/proj-shared/stf011/atsaris/results/toy-protmd/WT/md.gro", 
+          "/gpfs/alpine/proj-shared/stf011/atsaris/results/toy-protmd/WT/state.txt", 
+          "/gpfs/alpine/proj-shared/stf011/atsaris/results/toy-protmd/WT_graphs/",
+          temporal_fq=1)
