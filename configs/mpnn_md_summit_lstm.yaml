@@ -3,13 +3,10 @@ output_dir: /gpfs/alpine/world-shared/stf011/atsaris/gnn_results_md_out/temporal
 
 data:
     name: parse_md_gcn
-    n_train: 50 #270
-    n_valid: 50 #116
-    ### input_dir: '/gpfs/alpine/stf011/world-shared/atsaris/datagnn/datagnn_ras_2020/graph_kRas_monomer_large'
-    #filelist: '/ccs/proj/stf011/atsaris/august2020/gnn_new/gnn-protmd/filelist/test.KRAS_WT_r0.csv'
-    #filelist: '/ccs/proj/stf011/atsaris/august2020/gnn-protmd/filelists/temporal/KRAS_WT_r0_small.csv'
+    n_train: 320
+    n_valid: 80
     filelist: '/autofs/nccs-svm1_proj/stf011/atsaris/august2020/gnn_new/gnn-protmd/filelist/KRAS_r0.csv'
-    batch_size: 8
+    batch_size: 32
 
 model:
     name: mpnn6
@@ -24,4 +21,4 @@ optimizer:
     lr: 0.001
 
 training:
-    n_epochs: 1 #100
+    n_epochs: 100
