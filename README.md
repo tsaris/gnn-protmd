@@ -12,4 +12,4 @@ molecular dynamics simulations
 * The MPNN-Toy branch uses the same models as the master branch but the data loaders are different
 
 
-The basica GNN operations were used based on [pytorch_geometric](https://github.com/rusty1s/pytorch_geometric) and [pytorch_geometric_temporal](https://github.com/benedekrozemberczki/pytorch_geometric_temporal)
+The basic GNN operations were used based on [pytorch_geometric](https://github.com/rusty1s/pytorch_geometric) and [pytorch_geometric_temporal](https://github.com/benedekrozemberczki/pytorch_geometric_temporal)
